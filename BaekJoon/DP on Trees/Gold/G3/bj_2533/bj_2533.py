@@ -19,6 +19,10 @@ n_node = int(input())
 # 파이썬 리스트는 다양한 자료형을 넣을 수 있기에 랜덤엑세스가 불가하다.
 # 파이썬 리스트는 모든 인덱스의 포인터를 따로 저장하고 있다.
 # 결국 딕셔너리가 메모리를 더 많이 필요로 하는 명확한 이유는 찾지 못했다.
+"""
+3.6 이후의 딕셔너리 구조를 보면 각 엔트리를 가리키는 indices라는 포인터 어레이가 추가로 있다.
+그게 원인이 아닐까 추정. 참고자료 https://kadensungbincho.tistory.com/23
+"""
 connect = [[] for _ in range(n_node + 1)]
 # connect = {}
 # for i in range(1, n_node + 1):
