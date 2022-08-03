@@ -5,6 +5,7 @@ sys.stdin = open('input.txt')
 def input():
     return sys.stdin.readline().rstrip()
 """
+요세푸스.
 처음엔 인덱스만 회전시키고 리스트에서 매 원소 del연산으로 삭제한다고 고생했는데 
 그냥 deque 사용하고 pop한 원소를 다시 append로 넣어서
 리스트를 실제 회전 돌리는게 편했다. 분류에 왜 큐가 있나 했었는데...
