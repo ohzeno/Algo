@@ -5,12 +5,12 @@ def input():
     return sys.stdin.readline().rstrip()
 
 def floyd_warshall():
-    for i in range(1, n_node + 1):  # i노드 경유
-        for j in range(1, n_node + 1):  # j노드에서 출발
-            for k in range(1, n_node + 1):  # k노드로 갈 때
-                if j != i != k:  # 경유노드가 출발노드나 목적노드와 같으면 안됨.
-                    if mat[j][i] + mat[i][k] < mat[j][k]:  # i노드 경유했을 때 더 빠르면 갱신
-                        mat[j][k] = mat[j][i] + mat[i][k]
+    for tp in range(1, n_node + 1):  # tp 노드 경유. 출발노드가 아니라 경유노드를 체크.
+        for ts in range(1, n_node + 1):  # ts 노드에서 출발
+            for te in range(1, n_node + 1):  # te 노드로 갈 때
+                if ts != tp != te:  # 경유노드가 출발노드나 목적노드와 같으면 안됨.
+                    if mat[ts][tp] + mat[tp][te] < mat[ts][te]:  # tp 노드 경유했을 때 더 빠르면 갱신
+                        mat[ts][te] = mat[ts][tp] + mat[tp][te]
 def solution():
     floyd_warshall()
     ans = 0
