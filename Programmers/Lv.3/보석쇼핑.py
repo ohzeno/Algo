@@ -6,56 +6,57 @@ def solution(gems):
     # gems 배열 10만 이하
     # 첫 gem은 1번 진열대.
     # gems 원소는 1~10 길이의 알파벳 대문자.
-    display = {}
-    for i, gem in enumerate(gems):
-        if gem in display:
-            heappush(display[gem], i)
-        else:
-            display[gem] = [i]
+    gemcount = {}
+    allgems = len(set(gems))  # 보석 종류 수
+    st = 0
+    ed = 0
+    def add_gem(gem):
+        # remove_gem에서 0이 된 gem을 남겨뒀기에 0을 체크해줘야한다.
+        if gem not in gemcount or gemcount[gem] == 0:
+            gemcount[gem] = 1  # 기록 없으면 개수 기록
+            now_type[0] += 1  # 현 범위 보석 종류 증가
+        else:  # 이미 기록이 있으면 개수 갱신
+            gemcount[gem] += 1
 
-    def bsearch(ll, hh, data):
-        if data[0] > hh or data[-1] < ll:
-            return False
-        start = 0
-        end = len(data) - 1
-        while start <= end:
-            mid = (start + end) // 2
-            if ll <= data[mid] <= hh:
-                return True
-            elif data[mid] < ll:
-                start = mid + 1
-            else:
-                end = mid - 1
-        return False
+    def remove_gem(gem):
+        gemcount[gem] -= 1  # st에서 체크했기 때문에 무조건 dict에 있다.
+        if gemcount[gem] == 0:  # 0이 되면 현 범위 보석 종류 감소
+            now_type[0] -= 1
+            # del gemcount[gem]  # 제거해주면 add_gem에서 편하다.
 
-    def check(i, j):
-        for gem in display:
-            if not bsearch(i, j, display[gem]):
-                return False
-        else:
-            return True
+    len_list = len(gems)  # 진열대 길이
+    min_length = len_list + 1  # 최소범위. 최초값은 크게
+    now_type = [0]  # 현 범위 보석 종류 수. 위쪽 def에서 접근하기 편하게 리스트로
+    add_gem(gems[st])  # 시작 기록
+    results = []  # 범위들 기록할 리스트
+    while True:
+        if st >= len_list:  # st가 범위 초과하면 종료
+            break
+        if now_type[0] >= allgems:  # 현 보석 수가 종류 초과하면
+            tmp = ed - st  # 현 길이
+            # 이전 기록한 최소길이보다 짧고 현 보석 수 = 종류면 최소길이 갱신
+            if tmp < min_length and now_type[0] == allgems:
+                min_length = tmp
+                heappush(results, [tmp, st + 1, ed + 1])  # 길이, 시작 번호로 오름차순 정렬 유지
+            remove_gem(gems[st])  # 시작위치 갱신
+            st += 1
+        else:  # 보석 수가 종류보다 모자라면
+            if ed + 1 < len_list:  # 아직 리스트 내부면 종료점 갱신
+                ed += 1
+                add_gem(gems[ed])
+            else:  # 리스트 초과하면 중단(st를 올려도 보석 수가 늘진 않는다)
+                break
+    # 길이 가장 짧고 시작번호 가장 빠른 기록의 시작, 끝 번호 리턴
+    return [results[0][1], results[0][2]]  
 
-    ans = {}
-    num_type = len(display)
-    max_len = len(gems)
-    shortest = max_len
-    for i in range(max_len - num_type + 1):
-        for j in range(max_len - 1, i - 1, -1):
-            if num_type - 1 <= j - i <= shortest:
-                if check(i, j):
-                    shortest = j - i
-                    if j - i in ans:
-                        heappush(ans[j - i], [i + 1, j + 1])
-                    else:
-                        ans[j - i] = [[i + 1, j + 1]]
-    tmp_list = ans[min(ans.keys())]
-    return [tmp_list[0][0], tmp_list[0][1]]
 
 inputdatas = [
     ["DIA", "RUBY", "RUBY", "DIA", "DIA", "EMERALD", "SAPPHIRE", "DIA"],
     ["AA", "AB", "AC", "AA", "AC"],
     ["XYZ", "XYZ", "XYZ"],
-    ["ZZZ", "YYY", "NNNN", "YYY", "BBB"]
+    ["ZZZ", "YYY", "NNNN", "YYY", "BBB"],
+    ["ABC", "XYZ", "ABC", "XYZ"],
+    ["A", "AA", "AA", "AAA", "AA", "A"]
 ]
 
 """
@@ -63,21 +64,52 @@ inputdatas = [
 35분 정도에 첫 로직을 완성했고 런타임에러가 많았다.
 이전에 런타임 에러는 인덱싱 관련 오타였기에 이번에도 범위체크를 했고,
 두 곳의 range에서 실수를 고쳤다. 이번에는 시간초과가 많았다.
+
 처음에는 sorting을 여러 차례 했고, 보석 종류 수 이상의 길이를 가진 모든 idx 조합을 테스트했다. 
 시간을 줄이기 위해 각 보석들의 위치 인덱스를 따로 set로 저장하여 순회했으나
-나중에 눈치챈건데, 
-진열대 전부에 보석이 있으므로 결국 set에 모든 인덱스가 들어가서 의미가 없었다.
+나중에 눈치챈건데, 진열대 전부에 보석이 있으므로 결국 set에 모든 인덱스가 들어가서 의미가 없었다.
 check 함수가 filter를 사용하던게 시간을 잡아먹나 해서 이진탐색을 사용하기 위해
 각 보석의 인덱스를 heapq를 사용해 정렬을 유지하고
 이진탐색을 사용했다. 최소, 최대 인덱스를 먼저 확인 후 범위를 벗어나면 return하여 시간을 줄였다.
+check에서 filter를 사용하지 않고 이진탐색을 사용하며 실행시간이 
+최대 89% 단축됐다(실행시간 긴 테케들만 봤을 때).
+
 최초에 최소길이를 크게 할당하고 i, j 조합을 만들었다.
 j - i가 보석 종류 수 이상이고, 최소 길이 이하인 경우에만 체크해줬고
 모든 보석이 있다면 최소길이를 갱신해주고
 ans 딕셔너리에 길이별로 범위를 기록해줬다.
 그 후 가장 짧은 길이의 범위들이 담긴 리스트만 갖고와서
 첫 원소(heapq로 시작 진열대 번호가 최소인 원소가 가장 앞으로 오도록 함)에서 범위를 뽑아 리턴했다.
-나름 시간을 꽤 줄인 것 같은데 85분을 사용하고도 정확성 테스트에서도 테스트케이스 하나가 시간초과가 났다.
-while Trying
+나름 시간을 꽤 줄인 것 같은데 85분을 사용하고도 정확성 테스트에서도 14번 테케가 시간초과가 발생했다.
+최소길이로 순회돌고 길이 늘려서 다시 도는 그런 방법이 생각나는데, 일단 오늘은 여기까지만 한다.
+최소길이부터 순회돌고 발견하는대로 정답으로 리턴하도록 해도 시간초과가 발생했다.
+순회에서 보석종류가 4인데 보석이 2개만 발견됐으면 최소 2칸을 옮기도록 처리해봤다.
+시간초과 이전에 실패케이스가 엄청나게 생겼다. 
+보석 종류가 4일 때 check쪽에서 첫 보석이 발견되지 않으면 남은 보석을 체크하지 않고 0을 리턴하는데, 
+2, 3, 4 보석이 있었음에도 불구하고 4칸을 옮겨가게 되어 오류가 발생했고, 수정했다.
+이렇게 해도 정확성 테스트 14번 테케에서 시간초과가 발생했다.
+
+shortest 순회마다 전체 보석 종류와의 차이의 최소값을 기록하고
+shortest를 증가시킬 때도 그 최소값만큼 증가시키도록 하여 범위 몇 개를 스킵하도록 했다.
+그렇게 최대 86%(실행시간 긴 테케들만 봤을 때)의 시간을 또 단축했다. 
+이제 14번 테케 제외하고는 길어야 500ms가량 소요된다.
+
+이진탐색을 사용하지 않아도 시간초과가 발생하니, 
+아래쪽 while문에서 빠져나오지 못하고 있을 가능성이 있지만 
+효율성 테스트도 전부 시간초과가 발생해서 설득력이 떨어진다.
+
+이전 풀이에서는 한 번 순회 돌며 보석의 위치들을 기록했다. 
+그 후 범위순회를 돌며 매번 이진탐색을 이용해 범위 내의 보석 수를 체크하고
+범위를 변경하여 나온 첫 답을 리턴했다.
+과정 자체만 보면 그렇게 느리지 않지만, 특정 범위 내 각 보석들의 이진탐색을 한다는 과정이 시간을 소모했다.
+
+새 풀이에서는 첫 답을 리턴할 수는 없지만 투포인터로 단 한번의 탐색만 진행한다.
+이전 풀이에서 매번 보석들을 이진탐색하여 종류 수를 체크하던 것에 비해
+새 풀이는 범위가 변경될 때 해당 인덱스에 대해서만 체크하여 종류 수를 따로 기록했다.
+heapq를 사용하여 길이, 진열대 시작 번호가 작은 순으로 정렬하여 마지막에 정렬이 필요하지 않았다.
+
+새 풀이도 범위에 관해 보석 종류 수를 체크하기에, 이전 풀이만큼은 아니더라도 순회시간을 줄였다.
+이전 풀이에서 매번 각 보석의 존재여부를 이진탐색으로 체크하던 부분이 시간을 많이 잡아먹지 않았나 생각된다.
 """
 
 for t in inputdatas:
