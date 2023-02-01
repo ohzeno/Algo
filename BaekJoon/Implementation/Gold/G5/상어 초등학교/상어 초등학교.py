@@ -19,81 +19,48 @@ def input():
 
 n = int(input())
 datas = [list(map(int, input().split())) for _ in range(n**2)]
+# 0, n+1을 만들어서 인덱싱을 편하게 하도록 했다.
 mat = [[0] * (n + 2) for _ in range(n + 2)]
 dirs = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # 우, 하, 좌, 상
 stu_likes = {}
 for stu, f1, f2, f3, f4 in datas:
-    stu_likes[stu] = [f1, f2, f3, f4]
-    likes = {}
-    max_likes = 0
-    for r in range(1, n + 1):
-        for c in range(1, n + 1):
-            if not mat[r][c]:
-                like = 0
+    stu_likes[stu] = [f1, f2, f3, f4]  # 학생별 좋아하는 친구들
+    candis = []  # 배정자리 후보
+    for r in range(1, n+1):
+        for c in range(1, n+1):
+            if not mat[r][c]:  # 비어있는 자리만
+                like, empty = 0, 0
                 for i in range(4):
                     nr, nc = r + dirs[i][0], c + dirs[i][1]
-                    if mat[nr][nc] in stu_likes[stu]:
-                        like += 1
-                if like >= max_likes:
-                    max_likes = like
-                    likes.setdefault(max_likes, []).append((r, c))
-    if max_likes and len(likes[max_likes]) == 1:
-        mat[likes[max_likes][0][0]][likes[max_likes][0][1]] = stu
-    else:
-        max_empty = 0
-        empties = {}
-        if not max_likes:
-            for r in range(1, n + 1):
-                for c in range(1, n + 1):
-                    if not mat[r][c]:
-                        empty = 0
-                        for i in range(4):
-                            nr, nc = r + dirs[i][0], c + dirs[i][1]
-                            if ((1 <= nr <= n) and (1 <= nc <= n)) and not mat[nr][nc]:
-                                empty += 1
-                        if empty >= max_empty:
-                            max_empty = empty
-                            empties.setdefault(max_empty, []).append((r, c))
-                        else:
-                            empties.setdefault(empty, []).append((r, c))
-        else:
-            for r, c in likes[max_likes]:
-                empty = 0
-                for i in range(4):
-                    nr, nc = r + dirs[i][0], c + dirs[i][1]
-                    if ((1 <= nr <= n) and (1 <= nc <= n)) and not mat[nr][nc]:
-                        empty += 1
-                if empty >= max_empty:
-                    max_empty = empty
-                    empties.setdefault(max_empty, []).append((r, c))
-                else:
-                    empties.setdefault(empty, []).append((r, c))
-        if len(empties[max_empty]) == 1:
-            mat[empties[max_empty][0][0]][empties[max_empty][0][1]] = stu
-        else:
-            empties[max_empty].sort()
-            mat[empties[max_empty][0][0]][empties[max_empty][0][1]] = stu
-tot_sati = 0
-for r in range(1, n + 1):
+                    if 1 <= nr <= n and 1 <= nc <= n:  # 범위 이내일 때
+                        if mat[nr][nc] in stu_likes[stu]:
+                            like += 1
+                        if not mat[nr][nc]:
+                            empty += 1
+                candis.append((like, empty, r, c))
+    # like, empty는 내림차순, r, c는 오름차순으로 정렬
+    candis.sort(key=lambda x: (-x[0], -x[1], x[2], x[3]))
+    mat[candis[0][2]][candis[0][3]] = stu  # 첫 원소가 규칙에 따른 배정 자리.
+ans = 0
+for r in range(1, n+1):
     for c in range(1, n + 1):
-        if mat[r][c]:
-            like = 0
-            for i in range(4):
-                nr, nc = r + dirs[i][0], c + dirs[i][1]
+        like = 0
+        for i in range(4):
+            nr, nc = r + dirs[i][0], c + dirs[i][1]
+            if 1 <= nr <= n and 1 <= nc <= n:
                 if mat[nr][nc] in stu_likes[mat[r][c]]:
                     like += 1
-            if like == 1:
-                tot_sati += 1
-            elif like == 2:
-                tot_sati += 10
-            elif like == 3:
-                tot_sati += 100
-            elif like == 4:
-                tot_sati += 1000
-print(tot_sati)
+        if like:  # 점수 부여
+            ans += 10 ** (like - 1)
+print(ans)
+
 
 """
 현 시점 골드5. 제출 13193 정답률 40.472 %
 일단 무식하게 구현했는데, 케이스가 많아서 자꾸 놓치는 조건들 때문에 몇 번 틀렸다.
-시간이 없어 일단 원본을 깃에 올리고, 추후 코드를 개선해볼 생각이다.
+~~시간이 없어 일단 첫 통과본을 깃에 올리고, 추후 코드를 개선해볼 생각이다.~~
+이전에는 각 조건을 체크한 후 다시 순회를 돌고는 했는데,
+이번에는 한 번의 순회동안 like, empty를 체크하고, candis에 append에 기록한 후
+candis를 정렬하여 자리를 배정했다.
+점수도 다시 보니 10의 제곱이라 길이를 줄일 수 있었다.
 """
