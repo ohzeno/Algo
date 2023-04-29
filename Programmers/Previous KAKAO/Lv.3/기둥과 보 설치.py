@@ -1,128 +1,44 @@
 # https://school.programmers.co.kr/learn/courses/30/lessons/60061
-# 기존 풀이. remove시 주변 좌표 안정성 체크
-def solution0(n, build_frame):
-    # 기둥은 바닥 위, 보의 끝부분 위, 또는 다른 기둥 위에 있어야 함.
-    # 보는 한쪽 끝이 기둥 위에 있거나 양쪽 끝이 다른 보와 동시에 연결되어 있어야 함.
-    # 보 설치는 왼쪽에서 오른쪽으로. 기둥은 아래에서 위로.
-    # 삭제 기능 있음. 삭제 후 규칙 위반하는 명령은 무시됨.
-    # build_frame의 모든 명령을 수행 후 구조물의 상태를 리턴.
-    # n은 5~100   build_frame 세로 1~1000 가로 4
-    # build_frame 원소 [x, y, a, b] x,y는 가로 세로 좌표.
-    # a가 0이면 기둥, 1이면 보. b가 0이면 삭제, 1이면 설치
-    # 구조물이 겹치도록 설치하거나 없는 구조물을 삭제하는 경우는 주어지지 않음.
-    # 최종 구조물은 가로길이가 3인 2차원 배열. 원소는 [x, y, a]
-    # x, y는 교차점 좌표, 가로, 세로.  a가 0이면 기둥, 1은 보
-    # x좌표 기준으로 오름차순 정렬, x좌표 같으면 y좌표 기준 오름차순. x, y 좌표가 모두 같으면 기둥이 앞
-    board = [[[0, 0] for _ in range(n + 1)] for _ in range(n + 1)]
-    def isok(c, r, a):
-        if a == 0:  # 기둥이면
-            # 바닥 위거나, 기둥 위거나
-            # 보 위거나.
-            if r == 0 or board[r - 1][c][0] \
-                    or (c and board[r][c - 1][1]) or (c < n and board[r][c][1]):
-                return True
-        elif a == 1:  # 보면(바닥에 설치하는 경우 주어지지 않음)
-            # 한쪽 끝이 기둥 위거나
-            # 양쪽 끝이 다른 보와 연결되어 있거나
-            if board[r - 1][c][0] or (c < n and board[r - 1][c + 1][0]) \
-                    or (0 < c < n - 1 and board[r][c - 1][1] and board[r][c + 1][1]):
-                return True
-        return False
-
-    def build(c, r, a):
-        if isok(c, r, a):
-            if a == 0:  # 기둥이면
-                board[r][c][0] = 1
-            else:  # 보면
-                board[r][c][1] = 1
-
-    def remove(c, r, a):
-        if a == 0:  # 기둥이면
-            board[r][c][0] = 0  # 기둥 삭제했을 때
-            if board[r + 1][c][0] and not isok(c, r + 1, 0):  # 위 칸에 기둥이 있고 괜찮지 않다면
-                board[r][c][0] = 1  # 기둥 다시 세우고 리턴
-                return
-            if c > 0 and board[r + 1][c - 1][1] and not isok(c - 1, r + 1, 1):  # 왼쪽에 보가 얹혀있고 괜찮지 않으면
-                board[r][c][0] = 1
-                return
-            if c < n and board[r + 1][c][1] and not isok(c, r + 1, 1):  # 오른쪽에 보가 얹혀있고 괜찮지 않으면
-                board[r][c][0] = 1
-                return
-        elif a == 1:  # 보면
-            board[r][c][1] = 0  # 보 삭제했을 때
-            if 0 < r < n:  # 제일 윗줄이나 바닥 아니면 기둥체크
-                if board[r][c + 1][0] and not isok(c + 1, r, 0):  # 오른쪽 위에 기둥이 있고 괜찮지 않으면
-                    board[r][c][1] = 1  # 보 다시 세우고 리턴
-                    return
-                if board[r][c][0] and not isok(c, r, 0):  # 바로 위에 기둥 있고 괜찮지 않으면
-                    board[r][c][1] = 1
-                    return
-            if c > 0 and board[r][c - 1][1] and not isok(c - 1, r, 1):  # 왼쪽에 보 있고 괜찮지 않으면
-                board[r][c][1] = 1
-                return
-            if board[r][c + 1][1] and not isok(c + 1, r, 1):  # 오른쪽에 보 있고 괜찮지 않으면
-                board[r][c][1] = 1
-                return
-
-    for x, y, a, b in build_frame:
-        if b == 1:
-            build(x, y, a)
-        else:
-            remove(x, y, a)
-    answer = []
-    for r in range(n + 1):
-        for c in range(n + 1):
-            if board[r][c][0]:
-                answer.append([c, r, 0])
-            if board[r][c][1]:
-                answer.append([c, r, 1])
-    answer.sort()
-    return answer
-
-# 새 풀이. remove시 현재까지 설치한 모든 좌표 안정성 체크
+# 2차 시도. 조건 깔끔해짐.
 def solution(n, build_frame):
-    answer = []
-    def isok(c, r, is_beam):
-        if not is_beam:  # 기둥의 경우
-            # 바닥이거나
-            # 밑에 기둥이 있거나
-            # 왼쪽에 보가 있거나
-            # 현 위치에 보가 있거나
-            if r == 0 \
-                    or [c, r - 1, 0] in answer \
-                    or [c - 1, r, 1] in answer \
-                    or [c, r, 1] in answer:
-                return True
-        elif is_beam:  # 보의 경우
-            # 밑에 기둥이 있거나
-            # 오른쪽 아래에 기둥이 있거나
-            # 양쪽에 보가 있거나
-            if [c, r - 1, 0] in answer \
-                or [c + 1, r - 1, 0] in answer \
-                or (
-                [c - 1, r, 1] in answer
-                and [c + 1, r, 1] in answer
-            ):
-                return True
-        return False
-
-    def build(c, r, is_beam):
-        if isok(c, r, is_beam):  # 규칙에 맞으면 추가
-            answer.append([c, r, is_beam])
-
-    def remove(c, r, is_beam):
-        answer.remove([c, r, is_beam])  # 일단 제거해보고
-        for c2, r2, is_beam2 in answer:  # 설치된 구조물 순회하며
-            if not isok(c2, r2, is_beam2):  # 문제가 있다면
-                answer.append([c, r, is_beam])  # 다시 추가하고 중단
-                return
-
-    for x, y, is_beam, is_build in build_frame:
-        if is_build:  # 설치작업
-            build(x, y, is_beam)
-        else:  # 제거작업
-            remove(x, y, is_beam)
-    return sorted(answer)  # 정렬해서 리턴
+    """
+    - 기둥은 바닥 위 or 보의 한쪽 끝 or 다른 기둥 위에 있어야 함
+    - 보는 한쪽 끝 부분이 기둥 위 or 양쪽 끝 부분이 다른 보와 동시에 연결되어야 함.
+    바닥은 맨 아래.
+    삭제 기능도 있는데 삭제 후 규칙을 만족해야 함.
+    벽면 크기 n, 작업이 담긴 2차원 배열 build_frame이 주어짐.
+    모든 명령 수행 후 상태 return.
+    명령은 [x, y, a, b]로 구성.
+    x, y는 가로, 세로 좌표,
+    a는 구조물 종류(0: 기둥, 1: 보),
+    b는 설치/삭제(0: 삭제, 1: 설치)
+    벽면을 벗어나게 설치하는 경우 없음. 바닥에 보 설치하는 경우 없음.
+    보는 교차점 좌표 기준으로 오른쪽, 기둥은 위로 설치/삭제
+    구조물 겹치도록 설치하는 경우 없음. 없는 구조물 삭제 없음.
+    가로세로 3인 2차원 배열에 각 구조물 좌표 표시.
+    return 배열의 원소는 [x, y, a]로 구성.
+    return 배열은 x좌표 기준 오름차순. x좌표 같으면 y좌표 기준 오름차순.
+    x, y 같으면 기둥이 보보다 앞.
+    """
+    def is_ok(x, y, a):
+        if a == 0:  # 기둥인가?
+            t1 = y == 0 or (x, y-1, 0) in answer  # 바닥이거나 아래에 기둥이 있나?
+            t2 = (x-1, y, 1) in answer  # 왼쪽에 보가 있나?
+            t3 = (x, y, 1) in answer  # 오른쪽에 보가 있나?
+        else:  # 보인가?
+            t1 = (x, y-1, 0) in answer  # 왼쪽 아래에 기둥이 있나?
+            t2 = (x+1, y-1, 0) in answer  # 오른쪽 아래에 기둥이 있나?
+            t3 = (x-1, y, 1) in answer and (x+1, y, 1) in answer  # 양쪽에 보가 있나?
+        return t1 or t2 or t3  # 하나라도 만족하면 True
+    answer = set()
+    for x, y, a, b in build_frame:
+        if b == 0:
+            answer.remove((x, y, a))  # 일단 삭제
+            if any(not is_ok(r, c, a2) for r, c, a2 in answer):  # 문제 있으면
+                answer.add((x, y, a))
+        elif is_ok(x, y, a):  # 설치 가능하면
+            answer.add((x, y, a))  # 설치
+    return sorted(answer)  # 정렬해서 반환
 
 inputdatas = [
     # [
@@ -173,6 +89,9 @@ inputdatas = [
 '벽면을 벗어나게 기둥, 보를 설치하는 경우는 없습니다.'에 위배되는 케이스에서 내 풀이와 다른 풀이의 아웃풋이 달랐다.
 다음날 풀이를 60분정도 살펴보다 오류를 찾았다. isok()의 기둥 케이스에서 현 좌표의 보를 체크해야 하는데 오른쪽 보를 체크했다... 3개 케이스랑 예시 2개 맞은게 용한 지경. 가장 기초적인 부분에서 실수를 한거라 좀 많이 당황스럽다.
 다른 풀이를 보면 remove에서 나처럼 복잡하게 체크하지 않는다. build_frame의 길이가 1000, n이 100이 최대라는 점에 착안하여, 삭제 명령이 들어오면 일단 삭제 후 지금까지 설치된 좌표들을 일일이 순회하며 안정성 체크를 해주고, 문제가 있다면 복구한다. 나는 효율성체크가 없는 경우에도 시간초과를 많이 경험하여 그런 비효율적 방법을 시도하지 못했다. 하지만 구현난이도가 엄청나게 내려가므로 실제 시험에서는 그렇게 풀었어야 했을 듯 하다. 기존 풀이는 solution0으로, 해당 풀이는 solution으로 작성해놓았다.
+
+2차시도. 39분만에 통과. 기존 첫 번째 풀이와 비슷하지만 더 깔끔하게 개선됐다.
+기존 두 번째 풀이를 확인한 후 더 깔끔하게 작성했다. 20줄됨.
 """
 
 for t in inputdatas:
