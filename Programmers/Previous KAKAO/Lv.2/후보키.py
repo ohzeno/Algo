@@ -17,22 +17,18 @@ def solution(relation):
     """
     l_r, l_c = len(relation), len(relation[0])
     cols = [i for i in range(l_c)]  # 칼럼들
-    candidates = []  # 후보키 저장할 배열
+    candies = []  # 후보키 저장할 배열
     for n in range(1, l_c + 1):  # 몇 개의 컬럼을 선택할 것인가? 최소성을 위해 1부터 시작.
-        cases = combinations(cols, n)  # n개 컬럼 선택하는 조합들
-        for case in cases:  # 조합 순회
-            done = 0
-            for pre in candidates:  # 후보키 순회
-                if pre < set(case):  # 후보키가 현재 케이스의 부분집합이면 케이스 최소성X
-                    done = 1
-            if done:  # 최소성 만족 못하면 다음으로
+        for case in combinations(cols, n):  # 조합 순회
+            # 기존 후보키가 현재 케이스의 부분집합이면 케이스 최소성X
+            if any([pre < set(case) for pre in candies]):
                 continue
-            tmp = set()  # 유일성 확인용
+            is_uiq = set()  # 유일성 확인용
             for r in relation:  # 행 순회하며 해당 열 데이터들 튜플로 넣기
-                tmp.add(tuple([r[idx] for idx in case]))
-            if len(tmp) == l_r:  # 총 행 수와 set 길이가 같으면 유일하게 식별한 것.
-                candidates.append(set(case))  # 후보키에 추가.
-    return len(candidates)  # 후보키 갯수 리턴
+                is_uiq.add(tuple([r[idx] for idx in case]))
+            if len(is_uiq) == l_r:  # 총 행 수와 set 길이가 같으면 유일하게 식별한 것.
+                candies.append(set(case))  # 후보키에 추가.
+    return len(candies)  # 후보키 갯수 리턴
 
 inputdatas = [
     [
@@ -61,6 +57,10 @@ inputdatas = [
 즉, (2, 3)이 후보키라면 (3, 4)는 후보키가 될 수 없다고 생각했는데, 3이 단독으로 후보키였던게 아니라서 최소성을 만족한다.
 checked 배열로 처리해주던걸 그냥 케이스 째로 set로 기록하고, 부분집합 연산으로 최소성을 확인하도록 바꿨다.
 37분 수정안 제출, 통과.
+
+2차 시도. 20분 걸려서 풀었다. subset을 사용했지만 copy를 두 번이나 사용했다.
+기존 풀이보다 느리다. 더 빨리 풀었다는 점 제외하면 퇴보했다.
+기존 풀이 일부 개선하고 채택. 등호 부분집합 체크 까먹고 있었음.
 """
 
 for t in inputdatas:
