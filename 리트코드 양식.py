@@ -14,5 +14,6 @@ inputdatas = [
 import inspect
 sol = Solution()
 functions = inspect.getmembers(sol, predicate=inspect.ismethod)
+my_func = functions[0][1]
 for t in inputdatas:
-    print(functions[0][1](t[0], t[1]))
+    print(my_func(t[0], t[1]))
