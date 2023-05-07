@@ -1,5 +1,8 @@
 # https://leetcode.com/problems/count-number-of-nice-subarrays/description/
 from typing import Optional, List
+"""
+constraints:
+"""
 class Solution:
     def numberOfSubarrays(self, nums: List[int], k: int) -> int:
         cnt = 0
@@ -10,6 +13,8 @@ inputdatas = [
 ]
 
 """
+LeetCode Easy.
+
 """
 import inspect
 sol = Solution()
