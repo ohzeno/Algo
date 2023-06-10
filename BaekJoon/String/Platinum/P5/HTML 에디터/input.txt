@@ -1,0 +1,11 @@
+0 15 Testing<b>!</b>
+18 23 <big>100, <bigger>1000, <biggest>10000</biggest></bigger></big>
+4 4 <b>123</b>
+0 16   :-/ :-> :-) :-<-> </->
+8 23 <bigger>1000, </bigger><biggest>10000</biggest>
+35 35 <big>100, <bigger>1000, <biggest>10000</biggest></bigger></big>
+19 33 <big>100, <bigger>1000, <biggest>10000</biggest></bigger></big>
+5 16 <a>N ><b><c>f>asdfasss</c>s</b>ads</a>
+3 16 <a><b><c>asdfasdasdfasdfasdf</c></b></a>
+13 19 <a><b></b><c>ab<d>c</d></c></a>
+-1 -1
