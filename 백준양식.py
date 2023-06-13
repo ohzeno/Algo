@@ -2,5 +2,13 @@
 import sys
 sys.stdin = open('input.txt')
 def input():
-    return sys.stdin.readline().rstrip()
+    return sys.stdin.readline()
 
+"""
+"""
+
+
+
+"""
+현 시점 실버 1. 제출 950. 정답률 31.761 %
+"""
