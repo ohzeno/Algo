@@ -30,6 +30,8 @@ def conversion(lines):
         line += '\n'
         new_codes.append(line)
     output = ''.join(new_codes)
+    if output[-1] == '\n':
+        output = output[:-1]
     return output
 
 # 텍스트 파일에서 스키마 쿼리를 읽어 하나의 스트링으로 만듦.
