@@ -74,15 +74,15 @@ for _ in range(int(input())):
         dir = 1 if cmd > 0 else -1
         tmps = {cur: rotate(cube[cur][:], dir)}
         adjs, rows = [], deque()
-        for face, d, repeat in adj_d[cur]:
-            tmps[face] = rotate(cube[face][:], d, repeat)
+        for face, d, rep in adj_d[cur]:
+            tmps[face] = rotate(cube[face][:], d, rep)
             adjs.append(face)
             rows.append(tmps[face][2])
         rows.rotate(dir)
         for face, row in zip(adjs, rows):
             tmps[face][2] = row
-        for face, d, repeat in adj_d[cur]:
-            tmps[face] = rotate(tmps[face][:], -d, repeat)
+        for face, d, rep in adj_d[cur]:
+            tmps[face] = rotate(tmps[face][:], -d, rep)
         cube.update(tmps)
     if complete(cube):
         print("Yes, grandpa!")
