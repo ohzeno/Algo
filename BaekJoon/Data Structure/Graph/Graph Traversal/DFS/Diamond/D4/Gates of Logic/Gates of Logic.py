@@ -3,7 +3,6 @@ import sys
 sys.stdin = open('input.txt')
 def input():
     return sys.stdin.readline().rstrip()
-
 """
 OR(1): 파이썬 or
 AND(&): 파이썬 and
@@ -48,7 +47,7 @@ def read_circuit() -> (int, int, list[list[str]]):
         mat[i] += [' '] * (max_c - lens[i])  # 저장된 길이 사용해서 패딩.
     return h, max_c, mat
 
-def find_type(top: int, bott: int, ll:int, rr:int) -> str:
+def find_type(top: int, bott: int, ll: int, rr: int) -> str:
     for r in range(top + 1, bott):
         for c in range(ll + 1, rr):
             if mat[r][c] != ' ':  # 게이트 안쪽에 종류 문자가 있음.
@@ -88,17 +87,17 @@ def process(r: int, c: int, dir: int) -> int:
         return process(r, c - 1, 0)  # 왼쪽으로 가던 중
     elif mat[r][c] == '#':
         top, bott, ll, rr = find_boundary(r, c)  # 경계 찾기
-        gate_type = find_type(top, bott, ll, rr)  # 게이트 타입 찾기
+        gate = find_type(top, bott, ll, rr)  # 게이트 타입 찾기
         in_vals = [
             process(i, ll - 1, 0)  # 포트 입력값
             for i in range(top, bott + 1)  # 게이트 좌변 탐색
             if ll - 1 >= 0 and mat[i][ll - 1] == '='  # 왼쪽에 입력 있으면
         ]
-        if gate_type == '1':  # or 게이트
+        if gate == '1':  # or 게이트
             out = 1 if any(in_vals) else 0
-        elif gate_type == '&':  # and 게이트
-            out = 1 if all([in_val for in_val in in_vals]) else 0
-        elif gate_type == '=':  # xor 게이트
+        elif gate == '&':  # and 게이트
+            out = 1 if all(in_vals) else 0
+        elif gate == '=':  # xor 게이트
             out = sum(in_vals) % 2  # 홀수면 1(True), 짝수면 0(False)
         for i in range(top, bott+1):  # 연산 끝난 게이트 우변을 연산값으로 바꿈.
             mat[i][c] = str(out)  # 게이트 출력이 여럿이거나 여러 알파벳에 연결될 수 있음.
@@ -132,6 +131,8 @@ while True:
 
 """
 현 시점 다이아4. 제출 128, 정답률 17.969%
+숏코딩 모든 언어 1위, 맞힌 사람 python 1위.
+
 dfs는 자신있었지만 이 문제는 고생했다.
 처음엔 회로를 스캔하며 소스, 게이트(bfs로 경계, 네거티브 출력 기록), 
 출력을 모두 기록해두고 게이트의 입력들을 채운 후 게이트 출력을 채우고 
