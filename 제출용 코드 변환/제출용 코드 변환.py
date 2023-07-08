@@ -9,16 +9,18 @@ def conversion(lines):
     comm = False
     for line in lines:
         line = line.rstrip()
-        if "\"\"\"" in line:
+        if "\"\"\"" in line:  # 여러 줄 주석 토글
             comm = not comm
             continue
-        if comm:
+        if comm:  # 여러 줄 주석은 넘어감
             continue
-        if line == '' or line == '\n':
+        if line.startswith("inputdatas = ["):  # 릿코드, 프로그래머스 양식
+            break
+        if line == '' or line == '\n':  # 빈 줄
             continue
-        if line.strip() == "sys.stdin = open('input.txt')":
+        if line.startswith("sys.stdin = open('input.txt')"):
             continue
-        if line.strip().startswith('#'):
+        if line.lstrip().startswith('#'):
             continue
         if '#' in line:
             while '#' in line:
