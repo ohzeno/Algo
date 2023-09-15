@@ -4,16 +4,16 @@ from typing import Optional, List
 constraints:
 """
 class Solution:
-    def numberOfSubarrays(self, nums: List[int], k: int) -> int:
-        cnt = 0
-        return cnt
+    def minTaps(self, n: int, ranges: List[int]) -> int:
+        return 0
 
 inputdatas = [
 
 ]
 
 """
-LeetCode Easy.
+LeetCode Hard.
+제출 230.2K, 정답률 51.6%
 
 """
 import inspect
