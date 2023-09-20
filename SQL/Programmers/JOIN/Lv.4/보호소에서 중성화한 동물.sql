@@ -9,12 +9,17 @@
 중성화를 거친 동물은 Spayed 또는 Neutered라고 표시되어있습니다.
 */
 SELECT INS.ANIMAL_ID, INS.ANIMAL_TYPE, INS.NAME
-FROM ANIMAL_INS INS
-LEFT JOIN ANIMAL_OUTS OUTS
-    ON INS.ANIMAL_ID = OUTS.ANIMAL_ID
-WHERE INS.SEX_UPON_INTAKE LIKE "Intact%"  # 들어올 때 중성화되지 않았고
-  AND (  # 나갈 때 중성화된 경우
-      OUTS.SEX_UPON_OUTCOME LIKE "Spayed%"
-          OR OUTS.SEX_UPON_OUTCOME LIKE "Neutered%"
-      )
-ORDER BY INS.ANIMAL_ID
+FROM ANIMAL_INS AS INS
+         JOIN ANIMAL_OUTS AS OUTS
+              ON INS.ANIMAL_ID = OUTS.ANIMAL_ID
+WHERE INS.SEX_UPON_INTAKE LIKE 'Intact%' # 들어올 때 중성화되지 않았고
+#   AND ( # 나갈 때 중성화된 경우
+#             OUTS.SEX_UPON_OUTCOME LIKE "Spayed%"
+#         OR OUTS.SEX_UPON_OUTCOME LIKE "Neutered%"
+#     )
+  AND OUTS.SEX_UPON_OUTCOME NOT LIKE 'Intact%'
+ORDER BY INS.ANIMAL_ID;
+
+/*
+다시 풀면서 not like를 사용했다. 굳이 중성화조건들을 다 검사할 필요 없다.
+*/
