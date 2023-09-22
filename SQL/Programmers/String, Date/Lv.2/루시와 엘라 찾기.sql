@@ -6,10 +6,16 @@
 SELECT ANIMAL_ID, NAME, SEX_UPON_INTAKE
 FROM ANIMAL_INS
 WHERE NAME IN (
-    "Lucy",
-    "Ella",
-    "Pickle",
-    "Rogan",
-    "Sabrina",
-    "Mitty"
+    'Lucy',
+    'Ella',
+    'Pickle',
+    'Rogan',
+    'Sabrina',
+    'Mitty'
 )
+ORDER BY ANIMAL_ID
+
+/*
+다시 풀면서 보니 정렬을 깜빡했었다.
+정렬 안해도 정답처리 되긴 하는데 그건 문제 허점인듯.
+*/
