@@ -14,5 +14,11 @@ inputdatas = [
 Lv.3. 현 시점 완료한 사람 1155명, 정답률 22%
 """
 
-for t in inputdatas:
-    print(solution(*t))
+# for t in inputdatas:
+#     print(solution(*t))
+for data, ans in inputdatas:
+    res = solution(data)
+    if res == ans:
+        print("pass")
+    else:
+        print("fail\n", f"expected:{ans}\n", f"got:{res}\n")
