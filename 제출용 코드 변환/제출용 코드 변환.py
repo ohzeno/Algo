@@ -18,7 +18,7 @@ def conversion(lines):
             break
         if line == '' or line == '\n':  # 빈 줄
             continue
-        if line.startswith("sys.stdin = open('input.txt')"):
+        if line.startswith("sys.stdin = open"):  # input.txt를 감싸는 따옴표 종류가 다를 수 있으니 open까지만.
             continue
         if line.lstrip().startswith('#'):
             continue
