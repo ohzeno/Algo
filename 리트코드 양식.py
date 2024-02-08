@@ -20,5 +20,11 @@ import inspect
 sol = Solution()
 functions = inspect.getmembers(sol, predicate=inspect.ismethod)
 my_func = functions[0][1]
-for t in inputdatas:
-    print(my_func(*t))
+# for t in inputdatas:
+#     print(my_func(*t))
+for data, answer in inputdatas:
+    res = my_func(*data)
+    if res == answer:
+        print('pass')
+    else:
+        print('fail\n', f'expected:{answer}\n', f'got:{res}\n')
