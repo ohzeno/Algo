@@ -10,7 +10,7 @@ n개 도시, m개 버스.
 """
 
 n, m = int(input()), int(input())
-mat = [[float('inf') for _ in range(n + 1)] for _ in range(n + 1)]
+mat = [[float('inf') if r != c else 0 for c in range(n+1)] for r in range(n+1)]
 for _ in range(m):
     a, b, c = map(int, input().split())
     mat[a][b] = min(mat[a][b], c)  # 중복 있음
@@ -18,13 +18,7 @@ for _ in range(m):
 for mid in range(1, n + 1):
     for st in range(1, n + 1):
         for ed in range(1, n + 1):
-            """
-            이 문제는 st != ed를 체크해야 한다.
-            조건에는 적혀있지 않지만 예제와, 실제 제출 채점 결과로 볼 때
-            자기 자신에게 돌아오는 비용은 0으로 둔다.
-            """
-            if st != mid != ed and st != ed:
-                mat[st][ed] = min(mat[st][ed], mat[st][mid] + mat[mid][ed])
+            mat[st][ed] = min(mat[st][ed], mat[st][mid] + mat[mid][ed])
 for st in range(1, n + 1):
     for ed in range(1, n + 1):
         if mat[st][ed] == float('inf'):  # 갈 수 없는 경우 0으로
