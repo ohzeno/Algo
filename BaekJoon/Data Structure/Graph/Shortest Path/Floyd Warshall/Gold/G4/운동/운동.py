@@ -19,9 +19,7 @@ for _ in range(e):
 for mid in range(1, v + 1):
     for st in range(1, v + 1):
         for ed in range(1, v + 1):
-            # st != ed는 사용하지 않았다. 자신에게 돌아오는 사이클 비용을 구해야 하기 때문.
-            if st != mid != ed:
-                mat[st][ed] = min(mat[st][ed], mat[st][mid] + mat[mid][ed])
+            mat[st][ed] = min(mat[st][ed], mat[st][mid] + mat[mid][ed])
 ans = float('inf')
 for i in range(1, v + 1):
     ans = min(ans, mat[i][i])  # 각 노드에서 자신에게 돌아오는 사이클 비용 비교
