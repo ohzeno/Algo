@@ -1,8 +1,4 @@
 import clipboard
-import sys
-sys.stdin = open('input.txt', encoding='utf-8')
-def input():
-    return sys.stdin.readline().rstrip()
 
 def conversion(lines):
     new_codes = []
@@ -36,7 +32,9 @@ def conversion(lines):
         output = output[:-1]
     return output
 
-# 텍스트 파일에서 스키마 쿼리를 읽어 하나의 스트링으로 만듦.
-input_code = [line for line in sys.stdin]
+# 풀이 파일을 읽어서 한줄씩 리스트에 넣음.
+file_path = '../i_pro.py'
+with open(file_path, 'r', encoding='utf-8') as file:
+    input_code = [line.rstrip() for line in file]
 # 스키마 쿼리를 변환하고 클립보드에 복사함.
 clipboard.copy(conversion(input_code))
