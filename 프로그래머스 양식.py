@@ -1,9 +1,11 @@
 # https://school.programmers.co.kr/learn/courses/30/lessons/17682
 """
 """
-def solution():
 
+
+def solution():
     return
+
 
 inputdatas = [
 
@@ -14,11 +16,14 @@ inputdatas = [
 Lv.3. 현 시점 완료한 사람 1155명, 정답률 22%
 """
 
-# for t in inputdatas:
-#     print(solution(*t))
 for data, ans in inputdatas:
     res = solution(data)
     if res == ans:
         print("pass")
     else:
-        print("fail\n", f"expected:{ans}\n", f"got:{res}\n")
+        summary = "fail"
+        for label, content in [("expected:", ans), ("got:", res)]:
+            summary += f"\n  {label}\n"
+            summary += f"    {content}\n"
+            summary = summary.rstrip()
+        print(summary)
