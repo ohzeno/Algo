@@ -8,7 +8,7 @@ BaekJoon, Programmers, LeetCode, SWEA 등에서 알고리즘, SQL 문제들을 �
 
 SQL의 경우 문제가 적어서 복습하는 경우가 많다. 너무 간단한 쿼리의 경우, 다시 풀어도 변화가 없는 경우가 있어 다시 커밋하지 않기로 한다.
 
-
+<br>
 
 ## boj_judge
 
@@ -33,26 +33,26 @@ boj_judge.py에서 스크립트의 경로를 지정한다. 나는 최상위 폴�
 
 ```py
 inputdatas = [
-    [
-        """2 1
+    {
+        "data": """2 1
 5 10
 100 100
 11""",
-        """10""",
-    ],
-    [
-        """3 2
+        "answer": "10",
+    },
+    {
+        "data": """3 2
 1 65
 5 23
 2 99
 10
 2""",
-        """164""",
-    ],
+        "answer": "164",
+    },
 ]
 ```
 
-백준의 테케를 복사해서 넣으면 정렬이 이상하게 보이지만 이건 해결할 수 없다. 여기서 정렬을 맞추면 데이터의 정렬이 이상해져서 입력에 문제가 생김.
+백준의 테케를 복사해서 넣으면 정렬이 이상하게 보이지만 이건 아직 어쩔 수 없다. 여기서 정렬을 맞추면 데이터의 정렬이 이상해져서 입력에 문제가 생김. 그렇다고 테케를 복사해서 붙여넣을 때마다 줄바꿈을 \n으로 바꾸는 것은 비효율적이다.
 
 이후 boj_judge.py를 실행하면 된다.
 
@@ -88,7 +88,7 @@ fail
 
 풀이 코드에서 에러가 발생할 경우, 해당 코드의 에러만 가져와서 에러 위치와 내용을 출력하도록 처리했다.
 
-
+<br>
 
 ## 제출용 코드 변환
 
@@ -104,7 +104,7 @@ file_path = '../i_pro.py'
 
 이후 실행하면 코드에서 주석을 비롯해 불필요한 부분을 제거하고 클립보드에 복사한다. 백준, 릿코드, 프로그래머스 모두 가능.
 
-
+<br>
 
 ### SQL 스키마 변환
 
@@ -128,12 +128,16 @@ insert into Sales (seller_id, product_id, buyer_id, sale_date, quantity, price) 
 insert into Sales (seller_id, product_id, buyer_id, sale_date, quantity, price) values ('3', '3', '4', '2019-05-13', '2', '2800')
 ```
 
-Create table If Not Exists Users
-Truncate table Users
-insert into Users
-리트코드의 스키마는 위와 같은 과정을 거친다.
-하지만 이렇게 하면 이미 Users 테이블이 존재할 경우, 데이터만 제거된다.
+```sql
+Create table If Not Exists Users;
+Truncate table Users;
+insert into Users;
+```
+
+리트코드의 스키마는 위와 같은 과정을 거치지만 이렇게 하면 이미 Users 테이블이 존재할 경우, 데이터만 제거된다.
+
 그리고 새로 입력하려던 Users와 기존 Users의 스키마가 다를 경우 오류가 발생한다.
+
 그래서 DROP TABLE IF EXISTS Users; 를 사용하여 기존 테이블이 존재할 경우 제거하고 새로운 테이블을 생성하도록 했다.
 
 ```sql
@@ -154,7 +158,7 @@ values ('1', '1', '1', '2019-01-21', '2', '2000'),
 
 변환된 쿼리
 
-
+<br>
 
 ## 양식
 
@@ -164,7 +168,7 @@ values ('1', '1', '1', '2019-01-21', '2', '2000'),
 
  백준, 프로그래머스 양식은 특이사항이 없으므로 여기서 설명하지 않는다.
 
-
+<br>
 
 ### 리트코드 양식
 
@@ -174,7 +178,8 @@ import inspect
 sol = Solution()
 functions = inspect.getmembers(sol, predicate=inspect.ismethod)
 my_func = functions[0][1]
-for data, answer in inputdatas:
+for inputdata in inputdatas:
+    data, ans = inputdata["data"], inputdata["answer"]
     res = my_func(*data)
 ```
 
@@ -221,7 +226,7 @@ for t in inputdatas:
     print(my_func(tree))
 ```
 
-
+<br>
 
 ### 리트코드 SQL 양식
 
@@ -229,12 +234,16 @@ for t in inputdatas:
 DROP TABLE IF EXISTS World;
 ```
 
-Create table If Not Exists Users
-Truncate table Users
-insert into Users
-리트코드의 스키마는 위와 같은 과정을 거친다.
-하지만 이렇게 하면 이미 Users 테이블이 존재할 경우, 데이터만 제거된다.
+```sql
+Create table If Not Exists Users;
+Truncate table Users;
+insert into Users;
+```
+
+리트코드의 스키마는 위와 같은 과정을 거치지만 이렇게 하면 이미 Users 테이블이 존재할 경우, 데이터만 제거된다.
+
 그리고 새로 입력하려던 Users와 기존 Users의 스키마가 다를 경우 오류가 발생한다.
+
 그래서 DROP TABLE IF EXISTS Users; 를 사용하여 기존 테이블이 존재할 경우 제거하고 새로운 테이블을 생성하도록 했다.
 
 Schema_Conversion.py에서는 이런 내용을 고려하여 변환하도록 되어있다.
