@@ -24,13 +24,14 @@ import inspect
 sol = Solution()
 functions = inspect.getmembers(sol, predicate=inspect.ismethod)
 my_func = functions[0][1]
-for data, answer in inputdatas:
+for inputdata in inputdatas:
+    data, ans = inputdata["data"], inputdata["answer"]
     res = my_func(*data)
-    if res == answer:
+    if res == ans:
         print("pass")
     else:
         summary = "fail"
-        for label, content in [("expected:", answer), ("got:", res)]:
+        for label, content in [("expected:", ans), ("got:", res)]:
             summary += f"\n  {label}\n"
             summary += f"    {content}\n"
             summary = summary.rstrip()

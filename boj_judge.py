@@ -22,34 +22,37 @@ def get_result(input_data: str) -> tuple[str, str]:
             # 예외 발생 시 traceback 정보를 에러스트림에 출력
             tb_lines = traceback.format_exception(type(e), e, e.__traceback__)
             # 채점기가 아닌 풀이 코드의 에러만 출력
-            filtered_tb_lines = [line for line in tb_lines if "boj_judge.py" not in line]
+            filtered_tb_lines = [
+                line for line in tb_lines if "boj_judge.py" not in line
+            ]
             errors.writelines(filtered_tb_lines)
     # 출력값, 에러값을 문자열로 변환
     return output.getvalue(), errors.getvalue()
 
 
 inputdatas = [
-    [
-        """2 1
+    {
+        "data": """2 1
 5 10
 100 100
 11""",
-        """10""",
-    ],
-    [
-        """3 2
+        "answer": "10",
+    },
+    {
+        "data": """3 2
 1 65
 5 23
 2 99
 10
 2""",
-        """164""",
-    ],
+        "answer": "164",
+    },
 ]
 
 script = "i_pro.py"
 
-for data, ans in inputdatas:
+for inputdata in inputdatas:
+    data, ans = inputdata["data"], inputdata["answer"]
     output, error = get_result(data)
     output = output.rstrip()  # 개행문자 제거
     if output == ans:  # 정답과 출력값이 같으면 pass
