@@ -49,19 +49,13 @@ def build_binary_tree(datas: List[Optional[int]]):
     i = 1  # 인덱스 0은 이미 처리했으므로, 인덱스 1부터 시작
     l_datas = len(datas)
     while i < l_datas:
-        node = queue.popleft()
-        # 왼쪽 자식을 찾고 큐에 추가.
-        if i < l_datas and datas[i] is not None:
-            left_child = TreeNode(datas[i])
-            node.left = left_child
-            queue.append(left_child)
-        i += 1
-        # 오른쪽 자식을 찾고 큐에 추가.
-        if i < l_datas and datas[i] is not None:
-            right_child = TreeNode(datas[i])
-            node.right = right_child
-            queue.append(right_child)
-        i += 1
+        cur_node = queue.popleft()
+        for side in ["left", "right"]:  # 자식 추가
+            if i < l_datas and datas[i] is not None:
+                child = TreeNode(datas[i])
+                setattr(cur_node, side, child)  # cur_node.side = child
+                queue.append(child)
+            i += 1
     return root
 
 import inspect
