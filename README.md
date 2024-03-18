@@ -178,16 +178,16 @@ values ('1', '1', '1', '2019-01-21', '2', '2000'),
 
 ```py
 import inspect
-
-sol = Solution()
-functions = inspect.getmembers(sol, predicate=inspect.ismethod)
+functions = [
+    value for value in Solution.__dict__.values() if inspect.isfunction(value)
+]
 my_func = functions[0][1]
 for inputdata in inputdatas:
     data, ans = inputdata["data"], inputdata["answer"]
     res = my_func(*data)
 ```
 
-릿코드는 Solution함수 내부에 함수를 만들도록 되어있으므로 my_func에 Solution 내부 함수(함수가 한 개일 경우)를 가져와서 사용한다. 함수가 여럿이거나 인풋데이터가 릿코드식 트리구조인 경우, 트리를 만드는 등 따로 작업한다.
+릿코드는 Solution함수 내부에 함수를 만들도록 되어있으므로 my_func에 Solution 내부 함수들을 가져와서 사용한다. 함수가 여럿이면 my_func에서 인덱싱 해줘야 하고, 인풋데이터가 릿코드식 트리구조인 경우, 트리를 만드는 등 따로 작업한다.
 
 ex) [Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/?envType=study-plan&id=level-1)
 
