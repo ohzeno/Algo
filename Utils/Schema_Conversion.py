@@ -1,6 +1,6 @@
 import clipboard
 import sys
-sys.stdin = open('input.txt')
+sys.stdin = open('../SQL/input.txt')
 def input():
     return sys.stdin.readline().rstrip()
 

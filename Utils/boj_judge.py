@@ -49,7 +49,7 @@ inputdatas = [
     },
 ]
 
-script = "i_pro.py"
+script = "../i_pro.py"
 
 for inputdata in inputdatas:
     data, ans = inputdata["data"], inputdata["answer"]
