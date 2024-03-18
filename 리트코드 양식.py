@@ -11,9 +11,7 @@ class Solution:
         return 0
 
 
-inputdatas = [
-
-]
+inputdatas = []
 
 """
 LeetCode Hard.
@@ -21,8 +19,9 @@ LeetCode Hard.
 
 """
 import inspect
-sol = Solution()
-functions = inspect.getmembers(sol, predicate=inspect.ismethod)
+functions = [
+    value for value in Solution.__dict__.values() if inspect.isfunction(value)
+]
 my_func = functions[0][1]
 for inputdata in inputdatas:
     data, ans = inputdata["data"], inputdata["answer"]
