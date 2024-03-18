@@ -181,13 +181,16 @@ import inspect
 functions = [
     value for value in Solution.__dict__.values() if inspect.isfunction(value)
 ]
-my_func = functions[0][1]
+my_func = functions[0]
+sol = Solution()
 for inputdata in inputdatas:
     data, ans = inputdata["data"], inputdata["answer"]
-    res = my_func(*data)
+    res = my_func(sol, *data)
 ```
 
 릿코드는 Solution함수 내부에 함수를 만들도록 되어있으므로 my_func에 Solution 내부 함수들을 가져와서 사용한다. 함수가 여럿이면 my_func에서 인덱싱 해줘야 하고, 인풋데이터가 릿코드식 트리구조인 경우, 트리를 만드는 등 따로 작업한다.
+
+functions는 정의순서를 유지하기 위해 `__dict__`로 직접 참조하였다. my_func는 인스턴스 메서드 사용이지만 직접참조라 self가 자동 전달되지 않는다. 그래서 인스턴스를 생성해서 첫 인자로 넣어준다.
 
 ex) [Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/?envType=study-plan&id=level-1)
 

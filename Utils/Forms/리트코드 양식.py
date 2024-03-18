@@ -19,13 +19,15 @@ LeetCode Hard.
 
 """
 import inspect
-functions = [
-    value for value in Solution.__dict__.values() if inspect.isfunction(value)
-]
-my_func = functions[0][1]
+
+functions = [value for value in Solution.__dict__.values() if inspect.isfunction(value)]
+my_func = functions[0]
+sol = Solution()
 for inputdata in inputdatas:
     data, ans = inputdata["data"], inputdata["answer"]
-    res = my_func(*data)
+    # 인스턴스 메소드 호출이지만 Solution.__dict__.values()로 직접 참조하고 있어
+    # self가 자동으로 전달되지 않음. 인스턴스를 만들어서 넣어줌.
+    res = my_func(sol, *data)
     if res == ans:
         print("pass")
     else:
