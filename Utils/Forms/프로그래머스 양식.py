@@ -16,7 +16,7 @@ Lv.3. 현 시점 완료한 사람 1155명, 정답률 22%
 
 for inputdata in inputdatas:
     data, ans = inputdata["data"], inputdata["answer"]
-    res = solution(data)
+    res = solution(*data)
     if res == ans:
         print("pass")
     else:
