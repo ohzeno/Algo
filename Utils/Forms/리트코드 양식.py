@@ -11,7 +11,9 @@ class Solution:
         return 0
 
 
-inputdatas = []
+inputdatas = [
+    {"data": [], "answer": ""},
+]
 
 """
 LeetCode Hard.

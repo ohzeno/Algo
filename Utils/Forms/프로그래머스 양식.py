@@ -7,7 +7,9 @@ def solution():
     return
 
 
-inputdatas = []
+inputdatas = [
+    {"data": [], "answer": ""},
+]
 
 """
 2022 카카오 테크 인턴십 기출. 
