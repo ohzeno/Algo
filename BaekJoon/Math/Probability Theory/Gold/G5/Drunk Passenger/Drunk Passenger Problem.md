@@ -1,8 +1,8 @@
 # Drunk Passenger Problem
 
-1. [조건부 확률](#1.-조건부-확률)
-2. [점화식](#2.-점화식)
-3. [단순화](#3.-단순화)
+1. [조건부 확률](#조건부-확률)
+2. [점화식](#점화식)
+3. [단순화](#단순화)
 
 > There are 100 passengers boarding an aircraft. Each passenger in the queue has a specified seat number. The first passenger in a queue is drunk and chooses the seat randomly. For each following passenger, if her/his seat has been occupied, she/he then picks the seat randomly, otherwise she/he goes to the assigned seat. The question is what is the probability that the last person in the queue gets her/his designated seat?
 
@@ -12,7 +12,7 @@
 
 <br/>
 
-## 1. 조건부 확률
+## 조건부 확률
 
 100번 승객이 자신의 자리에 앉는 사건을 Z, 1번 승객이 i번 자리에 앉는 사건을 $A_i$라 하자.
 
@@ -38,7 +38,7 @@ $$
 
 <br/>
 
-## 2. 점화식
+## 점화식
 
 1번 승객이 i번 자리에 앉는다면, i번 승객은 자신의 좌석이 1번인 취객으로 변한다.
 
@@ -96,7 +96,7 @@ Q(1)이 주어졌으므로 dp를 통해 원하는 n의 Q값을 구할 수 있다
 
 <br/>
 
-## 3. 단순화
+## 단순화
 
 대부분의 해설이 이와 유사하나, 핵심 조건들이 빠져있거나 중간 논리들이 빠져있거나 이상하게 비틀어서 논리적 모순들이 가득하다.
 
