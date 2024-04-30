@@ -13,16 +13,28 @@ constraints:
 
 
 class Solution:
+    # def kInversePairs(self, n: int, k: int) -> int:
+    #     dp = [[0] * (k + 1) for _ in range(n + 1)]
+    #     MOD = 10**9 + 7
+    #     dp[1][0] = 1
+    #     for r in range(2, n + 1):
+    #         dp[r][0] = 1
+    #         for c in range(1, k+1):
+    #             dp[r][c] = dp[r][c-1] + dp[r-1][c] - (dp[r-1][c-r] if c >= r else 0)
+    #             dp[r][c] %= MOD
+    #     return dp[n][k]
     def kInversePairs(self, n: int, k: int) -> int:
-        dp = [[0] * (k + 1) for _ in range(n + 1)]
+        # 리스트 2개로 메모리 최적화
         MOD = 10**9 + 7
-        dp[1][0] = 1
+        prev = [0] * (k + 1)
+        cur = [0] * (k + 1)
+        prev[0] = cur[0] = 1
         for r in range(2, n + 1):
-            dp[r][0] = 1
-            for c in range(1, k+1):
-                dp[r][c] = dp[r][c-1] + dp[r-1][c] - (dp[r-1][c-r] if c >= r else 0)
-                dp[r][c] %= MOD
-        return dp[n][k]
+            for c in range(1, k + 1):
+                cur[c] = cur[c-1] + prev[c] - (prev[c-r] if c >= r else 0)
+                cur[c] %= MOD
+            prev = cur[:]
+        return cur[k]
 
 
 inputdatas = [
@@ -61,6 +73,8 @@ dp[n][k-1] = dp[n-1][k-1] + ... + dp[n-1][0]
 
 그러므로
 dp[n][k] = dp[n][k-1] + dp[n-1][k] - dp[n-1][k-n] if k >= n else 0 (n > 1)
+
+리스트 두줄만 사용해서 메모리를 최적화 할 수 있다.
 """
 import inspect
 
