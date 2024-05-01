@@ -1,4 +1,5 @@
 # https://leetcode.com/problems/k-inverse-pairs-array/
+import sys
 from typing import Optional, List
 
 """
@@ -10,7 +11,8 @@ constraints:
 1 <= n <= 1000
 0 <= k <= 1000
 """
-
+from functools import cache
+sys.setrecursionlimit(10**7)
 
 class Solution:
     # def kInversePairs(self, n: int, k: int) -> int:
@@ -19,22 +21,37 @@ class Solution:
     #     dp[1][0] = 1
     #     for r in range(2, n + 1):
     #         dp[r][0] = 1
-    #         for c in range(1, k+1):
+    #         max_k = r * (r - 1) // 2
+    #         for c in range(1, min(max_k, k)+1):
     #             dp[r][c] = dp[r][c-1] + dp[r-1][c] - (dp[r-1][c-r] if c >= r else 0)
     #             dp[r][c] %= MOD
     #     return dp[n][k]
+    # def kInversePairs(self, n: int, k: int) -> int:
+    #     # 리스트 2개로 메모리 최적화
+    #     MOD = 10**9 + 7
+    #     prev = [0] * (k + 1)
+    #     cur = [0] * (k + 1)
+    #     prev[0] = cur[0] = 1
+    #     for r in range(2, n + 1):
+    #         max_k = r * (r - 1) // 2
+    #         for c in range(1, min(max_k, k) + 1):
+    #             cur[c] = cur[c - 1] + prev[c] - (prev[c - r] if c >= r else 0)
+    #             cur[c] %= MOD
+    #         prev = cur[:]
+    #     return cur[k]
+    @cache
     def kInversePairs(self, n: int, k: int) -> int:
-        # 리스트 2개로 메모리 최적화
-        MOD = 10**9 + 7
-        prev = [0] * (k + 1)
-        cur = [0] * (k + 1)
-        prev[0] = cur[0] = 1
-        for r in range(2, n + 1):
-            for c in range(1, k + 1):
-                cur[c] = cur[c-1] + prev[c] - (prev[c-r] if c >= r else 0)
-                cur[c] %= MOD
-            prev = cur[:]
-        return cur[k]
+        max_k = n * (n - 1) // 2
+        if k > max_k:
+            return 0
+        if k == 0 or k == max_k:
+            return 1
+        return (
+            self.kInversePairs(n, k - 1) +
+            self.kInversePairs(n - 1, k) -
+            (self.kInversePairs(n - 1, k - n) if k >= n else 0)
+        ) % (10**9 + 7)
+
 
 
 inputdatas = [
@@ -75,15 +92,20 @@ dp[n][k-1] = dp[n-1][k-1] + ... + dp[n-1][0]
 dp[n][k] = dp[n][k-1] + dp[n-1][k] - dp[n-1][k-n] if k >= n else 0 (n > 1)
 
 리스트 두줄만 사용해서 메모리를 최적화 할 수 있다.
+캐시와 재귀를 사용할 수도 있는데, 엄청 느리고 메모리도 많이 사용한다.
+
+더 최적화된 풀이들은 마호니안 수를 이용하거나 누적합 배열을 이용한다.
+지금은 여기서 멈춰야겠다...
 """
 import inspect
 
-functions = [value for value in Solution.__dict__.values() if inspect.isfunction(value)]
-my_func = functions[0]
+# functions = [value for value in Solution.__dict__.values() if inspect.isfunction(value)]
 sol = Solution()
+functions = [member for member in inspect.getmembers(sol, predicate=inspect.ismethod)]
+my_func = functions[0][1]
 for inputdata in inputdatas:
     data, ans = inputdata["data"], inputdata["answer"]
-    res = my_func(sol, *data)
+    res = my_func(*data)
     if res == ans:
         print("pass")
     else:
