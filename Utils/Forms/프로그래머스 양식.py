@@ -25,6 +25,6 @@ for inputdata in inputdatas:
         summary = "fail"
         for label, content in [("expected:", ans), ("got:", res)]:
             summary += f"\n  {label}\n"
-            summary += f"    {content}\n"
+            summary += f"    {content}"
             summary = summary.rstrip()
         print(summary)

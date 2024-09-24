@@ -6,6 +6,8 @@
 
 BaekJoon, Programmers, LeetCode, SWEA 등에서 알고리즘, SQL 문제들을 풀어서 기록하고 있다. Python, JavaScript, SQL은 여기서 관리하고, Java는 [Algo_Java](https://github.com/ohzeno/Algo_Java) 레포에서 관리하고 있다.
 
+사이트, 문제, 언어에 따라 [AlgoBoost](https://github.com/ohzeno/AlgoBoost) 확장프로그램에서 자동으로 양식을 만들고 클립보드에 복사해준다.
+
 SQL의 경우 문제가 적어서 복습하는 경우가 많다. 너무 간단한 쿼리의 경우, 다시 풀어도 변화가 없는 경우가 있어 다시 커밋하지 않기로 한다.
 
 <br>
@@ -54,7 +56,7 @@ inputdatas = [
 
 백준의 테케를 복사해서 넣으면 정렬이 이상하게 보이지만 이건 아직 어쩔 수 없다. 여기서 정렬을 맞추면 데이터의 정렬이 이상해져서 입력에 문제가 생김. 그렇다고 테케를 복사해서 붙여넣을 때마다 줄바꿈을 \n으로 바꾸는 것은 비효율적이다.
 
-이후 boj_judge.py를 실행하면 된다.
+이후 boj_judge_py.py(언어별로 파일명이 다르다.)를 실행하면 된다.
 
 ```cmd
 pass
@@ -100,7 +102,7 @@ fail
 file_path = '../i_pro.py'
 ```
 
-제출용 코드 변환/제출용 코드 변환.py에서 변환할 코드 경로를 입력. 나는 i_pro.py만 사용해서 수정할 일이 거의 없다.
+제출용 코드 변환/제출용 코드 변환.py에서 변환할 코드 경로를 입력. ~~나는 i_pro.py만 사용해서 수정할 일이 거의 없다.~~ js, java 문제풀이도 하게 되어 언어별 변환 파일을 따로 만들었다.
 
 이후 실행하면 코드에서 주석을 비롯해 불필요한 부분을 제거하고 클립보드에 복사한다. 백준, 릿코드, 프로그래머스 모두 가능.
 
@@ -168,7 +170,9 @@ values ('1', '1', '1', '2019-01-21', '2', '2000'),
 
 백준, 프로그래머스, 릿코드, 프로그래머스 sql, 릿코드 sql 양식을 따로 뒀다.
 
-평소에는 해당 양식들을 i_pro.py에 붙여넣은 후 현재 풀 문제의 클래스나 함수 등을 입력해서 풀고 있다.
+js양식은 로직이 같으니 여기서 다루지 않는다. java양식은 [Algo_Java](https://github.com/ohzeno/Algo_Java) 레포에 있고, 로직이 같으니 다루지 않는다.
+
+평소에는 [AlgoBoost](https://github.com/ohzeno/AlgoBoost) 확장프로그램에서 양식을 자동으로 만들고 클립보드에 넣어주면 i_pro.py, i_pro.js, Main.java 등에 붙여넣고 풀고 있다.
 
  백준, 프로그래머스 양식은 특이사항이 없으므로 여기서 설명하지 않는다.
 
@@ -186,6 +190,15 @@ sol = Solution()
 for inputdata in inputdatas:
     data, ans = inputdata["data"], inputdata["answer"]
     res = my_func(sol, *data)
+    if res == ans:
+        print("pass")
+    else:
+        summary = "fail"
+        for label, content in [("expected:", ans), ("got:", res)]:
+            summary += f"\n  {label}\n"
+            summary += f"    {content}\n"
+            summary = summary.rstrip()
+        print(summary)
 ```
 
 릿코드는 Solution함수 내부에 함수를 만들도록 되어있으므로 my_func에 Solution 내부 함수들을 가져와서 사용한다. 함수가 여럿이면 my_func에서 인덱싱 해줘야 하고, 인풋데이터가 릿코드식 트리구조인 경우, 트리를 만드는 등 따로 작업한다.
