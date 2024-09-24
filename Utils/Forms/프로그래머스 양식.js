@@ -1,7 +1,7 @@
 // https://school.programmers.co.kr/learn/courses/30/lessons/17682
 
 /*
-
+constraints:
 */
 
 function solution() {
@@ -10,7 +10,7 @@ function solution() {
 
 
 const inputDatas = [
-    { data: [], answer: "" },
+    {data: [], answer: ""},
 ];
 
 /*
@@ -19,7 +19,7 @@ Lv.3. 현 시점 완료한 사람 1155명, 정답률 22%
 */
 
 for (let i = 0; i < inputDatas.length; i++) {
-    const { data, answer } = inputDatas[i];
+    const {data, answer} = inputDatas[i];
     const res = solution(...data);
     if (JSON.stringify(res) === JSON.stringify(answer)) {
         console.log("pass");
