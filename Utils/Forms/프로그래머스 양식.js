@@ -4,6 +4,7 @@
 constraints:
 */
 
+
 function solution() {
     return;
 }
