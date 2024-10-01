@@ -116,3 +116,5 @@ fabric.properties
 .idea/
 
 .vscode/
+
+node_modules/
