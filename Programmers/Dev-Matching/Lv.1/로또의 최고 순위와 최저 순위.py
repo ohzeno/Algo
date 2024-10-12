@@ -1,37 +1,49 @@
 # https://school.programmers.co.kr/learn/courses/30/lessons/77484
 """
-1~45
-6개 번호 맞으면 1등
-~2개 번호 맞으면 5등
-lottos의 0은 지워진 번호.
-가능한 최고 순위, 최저 순위를 구해서 리턴하라.
+constraints:
+  • lottos는 길이 6인 정수 배열입니다.
+  • lottos의 모든 원소는 0 이상 45 이하인 정수입니다.
+    ◦ 0은 알아볼 수 없는 숫자를 의미합니다.
+    ◦ 0을 제외한 다른 숫자들은 lottos에 2개 이상 담겨있지 않습니다.
+    ◦ lottos의 원소들은 정렬되어 있지 않을 수도 있습니다.
+  • win_nums은 길이 6인 정수 배열입니다.
+  • win_nums의 모든 원소는 1 이상 45 이하인 정수입니다.
+    ◦ win_nums에는 같은 숫자가 2개 이상 담겨있지 않습니다.
+    ◦ win_nums의 원소들은 정렬되어 있지 않을 수도 있습니다.
 """
 
 
 def solution(lottos, win_nums):
-    win_nums = set(win_nums)
-    same = len(set(lottos) & win_nums)
-    zeros = lottos.count(0)
-    ans = [same + zeros, same]
+    matches = len(set(lottos) & set(win_nums))
+    ans = [matches + lottos.count(0), matches]
     for i, case in enumerate(ans):
         ans[i] = 6 if case < 2 else 7 - case
     return ans
 
 
 inputdatas = [
-    [[44, 1, 0, 0, 31, 25], [31, 10, 45, 1, 6, 19]],
-    [[0, 0, 0, 0, 0, 0], [38, 19, 20, 40, 15, 25]],
-    [[45, 4, 35, 20, 3, 9], [20, 9, 3, 45, 4, 35]],
+    {"data": [[44, 1, 0, 0, 31, 25], [31, 10, 45, 1, 6, 19]], "answer": [3, 5]},
+    {"data": [[0, 0, 0, 0, 0, 0], [38, 19, 20, 40, 15, 25]], "answer": [1, 6]},
+    {"data": [[45, 4, 35, 20, 3, 9], [20, 9, 3, 45, 4, 35]], "answer": [1, 1]}
 ]
 
-"""
-현 시점 Lv.1. 완료한 사람 40,290명. 정답률 57%
-2021 Dev-Matching: 웹 백엔드 개발자(상반기) 기출.
 
-쉬운 문제라는걸 눈치채기까지 몇 분 걸렸다.
-베스트 풀이들을 보니 더 짧긴 한데 직관적이지 않고 가독성이 떨어졌다.
-당첨 순위는 for문을 쓰는게 제일 직관적인 듯 하다.
+"""
+2021 Dev-Matching: 웹 백엔드 개발자(상반기)
+Lv.1. 현 시점 완료한 사람 45,743명, 정답률 59%
+이전에 풀 때는 40290명, 57%였다.
+이번엔 문제 읽고 풀이 작성, 개선까지 5분 걸렸다.
 """
 
-for t in inputdatas:
-    print(solution(*t))
+for inputdata in inputdatas:
+    data, ans = inputdata["data"], inputdata["answer"]
+    res = solution(*data)
+    if res == ans:
+        print("pass")
+    else:
+        summary = "fail"
+        for label, content in [("expected:", ans), ("got:", res)]:
+            summary += f"\n  {label}\n"
+            summary += f"    {content}"
+            summary = summary.rstrip()
+        print(summary)
