@@ -1,56 +1,67 @@
 # https://school.programmers.co.kr/learn/courses/30/lessons/77485
 """
+constraints:
+  • rows는 2 이상 100 이하인 자연수입니다.
+  • columns는 2 이상 100 이하인 자연수입니다.
+  • 처음에 행렬에는 가로 방향으로 숫자가 1부터 하나씩 증가하면서 적혀있습니다.
+    ◦ 즉, 아무 회전도 하지 않았을 때, i 행 j 열에 있는 숫자는 ((i-1) x columns + j)입니다.
+  • queries의 행의 개수(회전의 개수)는 1 이상 10,000 이하입니다.
+  • queries의 각 행은 4개의 정수 [x1, y1, x2, y2]입니다.
+    ◦ x1 행 y1 열부터 x2 행 y2 열까지 영역의 테두리를 시계방향으로 회전한다는 뜻입니다.
+    ◦ 1 ≤ x1 < x2 ≤ rows, 1 ≤ y1 < y2 ≤ columns입니다.
+    ◦ 모든 회전은 순서대로 이루어집니다.
+    ◦ 예를 들어, 두 번째 회전에 대한 답은 첫 번째 회전을 실행한 다음, 그 상태에서 두 번째 회전을 실행했을 때 이동한 숫자 중 최솟값을 구하면 됩니다.
 """
+
 from collections import deque
 
 
 def solution(rows, columns, queries):
-    mat = [[r * columns + c + 1 for c in range(columns)] for r in range(rows)]
-    ans = []
-    for x1, y1, x2, y2 in queries:
+    def rotate_edges(x1, y1, x2, y2):
         to_rotate = deque()
-        x1, y1, x2, y2 = x1 - 1, y1 - 1, x2 - 1, y2 - 1
-        for c in range(y1, y2 + 1):
-            to_rotate.append(mat[x1][c])
-        for r in range(x1 + 1, x2 + 1):
-            to_rotate.append(mat[r][y2])
-        for c in range(y2 - 1, y1 - 1, -1):
-            to_rotate.append(mat[x2][c])
-        for r in range(x2 - 1, x1, -1):
-            to_rotate.append(mat[r][y1])
-        ans.append(min(to_rotate))
+        x1, y1, x2, y2 = map(lambda x: x - 1, (x1, y1, x2, y2))
+        to_rotate.extend(mat[x1][y1:y2 + 1])
+        to_rotate.extend(mat[r][y2] for r in range(x1 + 1, x2 + 1))
+        to_rotate.extend(reversed(mat[x2][y1:y2]))
+        to_rotate.extend(mat[r][y1] for r in reversed(range(x1 + 1, x2)))
         to_rotate.rotate(1)
+        min_num = min(to_rotate)
         for c in range(y1, y2 + 1):
             mat[x1][c] = to_rotate.popleft()
         for r in range(x1 + 1, x2 + 1):
             mat[r][y2] = to_rotate.popleft()
-        for c in range(y2 - 1, y1 - 1, -1):
+        for c in reversed(range(y1, y2)):
             mat[x2][c] = to_rotate.popleft()
-        for r in range(x2 - 1, x1, -1):
+        for r in reversed(range(x1 + 1, x2)):
             mat[r][y1] = to_rotate.popleft()
-    return ans
+        return min_num
+
+    mat = [[r * columns + c + 1 for c in range(columns)] for r in range(rows)]
+    return [rotate_edges(*query) for query in queries]
 
 
 inputdatas = [
-    [6, 6, [[2, 2, 5, 4], [3, 3, 6, 6], [5, 1, 6, 3]]],
-    [3, 3, [[1, 1, 2, 2], [1, 2, 2, 3], [2, 1, 3, 2], [2, 2, 3, 3]]],
-    [100, 97, [[1, 1, 100, 97]]],
+    {"data": [6, 6, [[2, 2, 5, 4], [3, 3, 6, 6], [5, 1, 6, 3]]], "answer": [8, 10, 25]},
+    {"data": [3, 3, [[1, 1, 2, 2], [1, 2, 2, 3], [2, 1, 3, 2], [2, 2, 3, 3]]], "answer": [1, 1, 5, 3]},
+    {"data": [100, 97, [[1, 1, 100, 97]]], "answer": [1]}
 ]
 
 """
-2021 Dev-Matching: 웹 백엔드 개발자(상반기) 기출. 
-Lv.2. 현 시점 완료한 사람 10,917명, 정답률 46%
-옮겨적기부터 제출, 채점까지 8분 걸렸다.
-그냥 rotate를 썼다.
-prev를 기록해서 순회를 하면서 교체해주는 방법도 있다.
-그렇게 하면 deque에 넣지 않기 때문에 매번 min연산을 해줘야하는 번거로움이 있다.
-for문 순회는 적어지는데 min연산이 늘고 
-prev를 넣는다는 부분이 직관성이 좀 떨어질 수 있다.
-
-테두리 도는 과정이 같아서 함수로 뺄까 했는데 
-그러면 if else로 기록과 회전을 나눠야 해서 오히려 라인 수가 늘어난다.
-가독성과 기능분리 면에서는 그쪽이 좋긴 하다.
+2021 Dev-Matching: 웹 백엔드 개발자(상반기)
+Lv.2. 현 시점 완료한 사람 12,846명, 정답률 48%
+이전 풀이에서 for문 일부를 extend로 변경하고 reversed를 이용해 직관성을 높였다.
+rotate_edges 함수를 만들어서 코드를 분리했다.
 """
 
-for t in inputdatas:
-    print(solution(*t))
+for inputdata in inputdatas:
+    data, ans = inputdata["data"], inputdata["answer"]
+    res = solution(*data)
+    if res == ans:
+        print("pass")
+    else:
+        summary = "fail"
+        for label, content in [("expected:", ans), ("got:", res)]:
+            summary += f"\n  {label}\n"
+            summary += f"    {content}"
+            summary = summary.rstrip()
+        print(summary)
