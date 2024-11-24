@@ -1,35 +1,47 @@
 # https://school.programmers.co.kr/learn/courses/30/lessons/64065
+"""
+constraints:
+
+"""
+
+
 def solution(s):
-    # 중복되는 원소가 없는 튜플이 {}로 주어짐.
-    # (1,2,3,4)면 {} 첫 원소는 {1} 마지막은 {1,2,3,4}
-    # 원소 순서 바뀌기도 함.
-    # {1,3,2,4}처럼 원소 내 원소 순서도 바뀔 수 있음.
-    # 문자열로 주어짐.
-    # 문자열이 나타내는 튜플을 배열로 리턴.
-    datas = s[2:-2].split('},{')  # 앞뒤 중괄호는 인덱싱으로, 나머지는 스플릿으로 사라진다.
-    datas = sorted(datas, key=lambda x: len(x))  # 길이대로 오름차순 정렬
-    ans = []  # 정답 저장할 배열
-    pre = set()  # 이전 차례와의 원소 비교를 위한 세트
-    for data in datas:  # 각 문자열에 대해서
-        tmp = set(data.split(',')) - pre  # 이전 세트와 비교하여 추가된 원소를 찾는다.
-        ans.append(int(tmp.pop()))  # 세트에서 뽑아낸 원소를 숫자로 바꿔 추가한다.
-        pre = set(data.split(','))  # 다음 세트와 비교를 위해 파싱된 현 세트를 저장한다.
+    datas = [set(map(int, x.split(','))) for x in s[2:-2].split('},{')]
+    ans = []
+    pre = set()
+    for data in sorted(datas, key=len):
+        ans.append((data - pre).pop())
+        pre = data
     return ans
 
+
 inputdatas = [
-    '{{2},{2,1},{2,1,3},{2,1,3,4}}',
-    '{{1,2,3},{2,1},{1,2,4,3},{2}}',
-    '{{20,111},{111}}',
-    '{{123}}',
-    '{{4,2,3},{3},{2,3,4,1},{2,3}}'
+    {"data": ["{{2},{2,1},{2,1,3},{2,1,3,4}}"], "answer": [2, 1, 3, 4]},
+    {"data": ["{{1,2,3},{2,1},{1,2,4,3},{2}}"], "answer": [2, 1, 3, 4]},
+    {"data": ["{{20,111},{111}}"], "answer": [111, 20]},
+    {"data": ["{{123}}"], "answer": [123]},
+    {"data": ["{{4,2,3},{3},{2,3,4,1},{2,3}}"], "answer": [3, 2, 4, 1]}
 ]
 
+
 """
-2019 카카오 개발자 겨울 인턴십 기출.
-Lv2. 36분 걸렸다. 첫 로직은 15분쯤 걸린 것 같다.
-쉬운 문제인데 테케 일부를 통과하지 못해 한참 헤맸다.
-알고보니 pre에 파싱하지 않은 문자열을 그대로 할당해서 틀렸었다...
+2019 카카오 개발자 겨울 인턴십
+Lv.2. 현 시점 완료한 사람 23,396명, 정답률 64%
+이전 풀이와 크게 다른건 없다. 파싱 과정에서 int로 변경, set처리도 한번에 해줬다.
+이전엔 한참 헤매서 36분 걸렸었는데 이번엔 개선까지 포함해서 7분 걸렸다.
+set 삽입 순서가 유지되니 pre를 따로 두지 않아도 풀 수 있지만, 
+자료구조 특성상 오해가 생길 수 있어 pre를 두었다.
 """
 
-for t in inputdatas:
-    print(solution(t))
+for inputdata in inputdatas:
+    data, ans = inputdata["data"], inputdata["answer"]
+    res = solution(*data)
+    if res == ans:
+        print("pass")
+    else:
+        summary = "fail"
+        for label, content in [("expected:", ans), ("got:", res)]:
+            summary += f"\n  {label}\n"
+            summary += f"    {content}"
+            summary = summary.rstrip()
+        print(summary)
