@@ -26,7 +26,7 @@ LeetCode Hard.
 
 for (let i = 0; i < inputDatas.length; i++) {
     const {data, answer} = inputDatas[i];
-    const res = solution(...data);
+    const res = numberOfSubarrays(...data);
     if (JSON.stringify(res) === JSON.stringify(answer)) {
         console.log("pass");
     } else {
