@@ -14,11 +14,14 @@ constraints:
 
 
 def solution(lottos, win_nums):
+    """
+    n>1일 때 n개 맞추면 7-n등
+    낙서된 번호 0.
+    가능한 최고 순위, 최저 순위 배열에 담아 반환.
+    """
     matches = len(set(lottos) & set(win_nums))
     ans = [matches + lottos.count(0), matches]
-    for i, case in enumerate(ans):
-        ans[i] = 6 if case < 2 else 7 - case
-    return ans
+    return [6 if case < 2 else 7 - case for case in ans]
 
 
 inputdatas = [
@@ -30,9 +33,10 @@ inputdatas = [
 
 """
 2021 Dev-Matching: 웹 백엔드 개발자(상반기)
-Lv.1. 현 시점 완료한 사람 45,743명, 정답률 59%
-이전에 풀 때는 40290명, 57%였다.
+Lv.1. 현 시점 완료한 사람 47,479명, 정답률 59%
+처음 풀 때는 40290명, 57%였다.
 이번엔 문제 읽고 풀이 작성, 개선까지 5분 걸렸다.
+3차. 개선 미포함 5분. 너무 오래 알고리즘을 안풀어서 실력이 줄었다.
 """
 
 for inputdata in inputdatas:
