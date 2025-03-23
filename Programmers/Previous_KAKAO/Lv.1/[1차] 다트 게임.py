@@ -16,7 +16,7 @@ def solution(dartResult):
     점수는 0~10. 총 점수를 반환하라.
     """
     bonus2exp = {'S': 1, 'D': 2, 'T': 3}
-    points = [0] * 3
+    points = []
     cur_point = 0
     for c in dartResult:
         if c.isdigit():
@@ -45,10 +45,12 @@ inputdatas = [
 
 """
 2018 KAKAO BLIND RECRUITMENT
-Lv.1. 현 시점 완료한 사람 28,564명, 정답률 59%
+Lv.1. 현 시점 완료한 사람 29,849명, 정답률 60%
 예전에는 각 order를 분리한 후에 처리하려고 했었고, 그게 까다로웠다.
 개발적으로 생각하면 책임 분리와 확장성을 고려해서 그게 맞는 것 같긴 한데,
 여기선 그냥 한글자씩 순회하면서 바로 처리해도 된다.
+3회차 13분 걸렸다. 여전히 숫자 분리 시점이 까다롭다.
+그리고 기존 풀이에서 points를 [0] * 3으로 초기화했었는데 append할거라 의미 없다.
 """
 
 for inputdata in inputdatas:
