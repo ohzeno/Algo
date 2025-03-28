@@ -9,6 +9,8 @@ def solution(numbers, hand):
     """
     hand = 'L' if hand == 'left' else 'R'  # L, R로 문자열 변경.
     h_pos = {'L': [3, 0], 'R': [3, 2]}  # 손가락 현 좌표
+    lset= {1, 4, 7}
+    rset = {3, 6, 9}
     pos_dic = {
         1: [0, 0],
         2: [0, 1],
@@ -25,39 +27,53 @@ def solution(numbers, hand):
         return abs(h_pos[h][0] - pos_dic[num][0]) + abs(h_pos[h][1] - pos_dic[num][1])
     s = ""
     for num in numbers:
-        if num in [1, 4, 7]:  # 147은 왼손
-            tmp = "L"
-        elif num in [3, 6, 9]:  # 369는 오른손
-            tmp = "R"
+        if num in lset:  # 147은 왼손
+            move_hand = "L"
+        elif num in rset:  # 369는 오른손
+            move_hand = "R"
         else:  # 그 외는 거리체크
             l_d = cal_dist('L', num)
             r_d = cal_dist('R', num)
             if l_d < r_d:  # 왼손이 가까우면 왼손
-                tmp = "L"
+                move_hand = "L"
             elif l_d > r_d:  # 오른손이 가까우면 오른손
-                tmp = "R"
+                move_hand = "R"
             else:  # 거리가 같으면 주 손
-                tmp = hand
-        s += tmp  # 정답에 더해주기
-        h_pos[tmp] = pos_dic[num]  # 손가락 위치 갱신. 값 수정할 게 아니라서 리스트 째로 대입해도 괜찮음.
+                move_hand = hand
+        s += move_hand  # 정답에 더해주기
+        h_pos[move_hand] = pos_dic[num]  # 손가락 위치 갱신. 값 수정할 게 아니라서 리스트 째로 대입해도 괜찮음.
     return s
 
 
 inputdatas = [
-    [[1, 3, 4, 5, 8, 2, 1, 4, 5, 9, 5], "right"],
-    [[7, 0, 8, 2, 8, 3, 1, 5, 7, 6, 2], "left"],
-    [[1, 2, 3, 4, 5, 6, 7, 8, 9, 0], "right"]
+    {"data": [[1, 3, 4, 5, 8, 2, 1, 4, 5, 9, 5], "right"], "answer": "LRLLLRLLRRL"},
+    {"data": [[7, 0, 8, 2, 8, 3, 1, 5, 7, 6, 2], "left"], "answer": "LRLLRRLLLRR"},
+    {"data": [[1, 2, 3, 4, 5, 6, 7, 8, 9, 0], "right"], "answer": "LLRLLRLLRL"}
 ]
 
 """
-2020 카카오 인턴십 기출. Lv.1 중간에 긴급재난문자 와서 시간체크가 이상하긴 한데 22분쯤 걸렸다.
+2020 카카오 인턴십
+Lv.1. 현 시점 완료한 사람 36,144명, 정답률 53%
+중간에 긴급재난문자 와서 시간체크가 이상하긴 한데 22분쯤 걸렸다.
 num_pos를 일일이 입력하는게 귀찮긴 했지만 문제 자체는 쉬웠다.
 베스트 풀이도 봤으나, 나와 같은 로직을 더 더럽게 푼 풀이라서 넘어간다.
 
 2차 시도. 쉬운 문제이기도 하고 비교적 최근에 풀어서 그런지 2차 풀이가 오히려 
 난잡해진 부분도 있다. 그래도 로직은 같고 1~2 줄 차이 정도다. 잠깐 훑어보면 개선 가능한 정도. 
 9분 정도 걸렸다.
+
+3차 6분. 하지만 기존 풀이가 더 깔끔하다.
 """
 
-for t in inputdatas:
-    print(solution(t[0], t[1]))
+for inputdata in inputdatas:
+    data, ans = inputdata["data"], inputdata["answer"]
+    res = solution(*data)
+    if res == ans:
+        print("pass")
+    else:
+        summary = "fail"
+        for label, content in [("expected:", ans), ("got:", res)]:
+            summary += f"\n  {label}\n"
+            summary += f"    {content}"
+            summary = summary.rstrip()
+        print(summary)
