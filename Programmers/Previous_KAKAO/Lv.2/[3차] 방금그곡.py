@@ -17,22 +17,20 @@ def solution(m, musicinfos):
         return h * 60 + m
 
     def get_on_air_melody(on_air_time, melody):
-        return (melody * (on_air_time // len(melody) + 1))[:on_air_time]
+        melody = remove_sharp(melody)
+        quot, remain = divmod(on_air_time, len(melody))
+        return melody * quot + melody[:remain]
 
     m = remove_sharp(m)
-    matches = []
-    for idx, musicinfo in enumerate(musicinfos):
+    candidates = []
+    for i, musicinfo in enumerate(musicinfos):
         st, ed, title, melody = musicinfo.split(',')
         st, ed = map(time_to_min, (st, ed))
         on_air_time = ed - st
-        if on_air_time == 0:
-            continue
-        melody = remove_sharp(melody)
         on_air_melody = get_on_air_melody(on_air_time, melody)
         if m in on_air_melody:
-            matches.append((-on_air_time, idx, title))
-    matches.sort()
-    return matches[0][2] if matches else "(None)"
+            candidates.append((-on_air_time, i, title))
+    return sorted(candidates)[0][2] if candidates else "(None)"
 
 
 
@@ -45,11 +43,12 @@ inputdatas = [
 
 """
 2018 KAKAO BLIND RECRUITMENT
-Lv.2. 현 시점 완료한 사람 9,758명, 정답률 49%
+Lv.2. 현 시점 완료한 사람 10,298명, 정답률 49%
 예전에 풀었을 때와 달리 B#이 추가됐는데, 문제 지문에는 적혀있지 않다.
 이번엔 replace 체이닝하지 않고 ord, chr을 이용해 대체해줬다.
 사실 for문 내에서 이전 답보다 on_air_time이 긴 음악으로 정답을 대체하기만 하면
 정렬은 필요 없다. 하지만 문제 조건을 보면 정렬이 직관적이라서 정렬을 사용했다.
+3회차 16분. get_on_air_melody를 더 직관적으로 바꿨다.
 """
 
 for inputdata in inputdatas:
