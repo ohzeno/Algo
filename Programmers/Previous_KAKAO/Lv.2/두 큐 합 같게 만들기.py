@@ -1,11 +1,21 @@
 # https://school.programmers.co.kr/learn/courses/30/lessons/118667
+"""
+constraints:
+  • 1 ≤ queue1의 길이 = queue2의 길이 ≤ 300,000
+  • 1 ≤ queue1의 원소, queue2의 원소 ≤ 10^9
+  • 주의: 언어에 따라 합 계산 과정 중 산술 오버플로우 발생 가능성이 있으므로 long type 고려가 필요합니다.
+"""
+
 from collections import deque
 
 def solution(queue1, queue2):
-    # pop, insert를 1회 작업으로 취급
-    # 각 큐의 원소의 합이 같도록 하기 위한 최소 작업 횟수
-    # 어떻게 해도 각 큐의 원소 합을 같게 만들 수 없는 경우 -1 리턴
-    # 큐의 길이: 1~30만    큐의 원소: 1~1억
+    """
+    길이가 같은 두 큐.
+    한 큐에서 다른 큐로 원소 하나 옮기는게 작업 1회.
+    두 큐의 합이 같게 만들기 위해 필요한 작업의 최소 횟수 리턴
+    같게 만들 수 없는 경우 -1 리턴
+    큐의 길이: 1~30만    큐의 원소: 1~1억
+    """
     s1, s2 = sum(queue1), sum(queue2)  # 각 큐 합
     if (s1 + s2) % 2:  # 홀수면 2등분 안됨.
         return -1
@@ -13,26 +23,23 @@ def solution(queue1, queue2):
     n = len(q1) * 2  # 두 큐를 이어놓은 리스트에서 투포인터를 사용한다고 생각할 수 있다.
     limit = n * 4  # 상세는 주석 참고. a가 n만큼 움직이면 b도 n만큼만 움직일 수 있음.
 
-    def shift_to(q1, q2):  # q1에서 q2로 옮기고 값 반환
+    def shift_to(q1, q2, s1, s2):
         tmp = q1.popleft()
         q2.append(tmp)
-        return tmp
+        s1 -= tmp
+        s2 += tmp
+        return s1, s2
 
     ans = 0
-    while True:
-        if s1 == s2:  # 같으면 횟수 반환.
-            return ans
+    while s1 != s2:
         if s1 > s2:  # s1이 크면 s1에서 s2로 옮기기
-            val = shift_to(q1, q2)
-            s1 -= val
-            s2 += val
+            s1, s2 = shift_to(q1, q2, s1, s2)
         else:  # s2가 크면 s1으로 옮기기
-            val = shift_to(q2, q1)
-            s1 += val
-            s2 -= val
+            s2, s1 = shift_to(q2, q1, s2, s1)
         ans += 1
         if ans > limit:  # 횟수 초과하면 이미 검사했던 부분.
             return -1
+    return ans
 
 
 inputdatas = [
@@ -65,6 +72,10 @@ b가 2로 움직이면 a는 1로만 움직일 수 있고, b가 3으로 움직이
 실제 풀이들을 보면 죄다 추측이거나 임의로 수치를 정했다. 수치를 증명 해야한다면 Lv.4는 되지 않았을까 한다.
 삼성 IM테스트에 수학적으로 증명하기 굉장히 힘든 문제가 있었는데(그래서 처음 봤을 땐 난이도가 엄청나게 높다 생각했다)
 그냥 일단 로직 짜보니 통과했던 것과 비슷한 케이스.
+
+2회차. 7분에 초안 제출, 테케 11, 28 시간 초과. 합이 홀수면 -1, 원소 최대값이 절반 넘으면 -1 리턴.
+나머진 임의로 큰 쪽에서 작은 쪽으로 옮기기 수행.
+방법 생각 안나서 다시 풀이 봤다. 졸려서 이어붙이는 로직 생각 못한 듯.
 """
 
 for t in inputdatas:
