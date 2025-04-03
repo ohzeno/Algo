@@ -17,6 +17,18 @@ constraints:
 
 
 def solution(n, k, cmd):
+    """
+    한 번에 한 행만 선택 가능.
+    U X: 현재 선택 행 X칸 위 행 선택
+    D X: 현재 선택 행 X칸 아래 행 선택
+    C: 현재 선택 행 삭제. 바로 아래 행 선택. 마지막 행이면 바로 윗 행 선택.
+    Z: 가장 최근에 삭제된 행 복구. 현재 선택 행은 바뀌지 않음.
+    n: 첫 행 개수
+    k: 처음 선택 행
+    cmd: 명령어 배열
+    모든 명령어 수행 후 처음과 표 상태 비교하여 삭제된 행은 X 아니면 O로 문자열 형태로 리턴
+    표 벗어나는 이동 주어지지 않음. 복구할 행 없을 때 Z 주어지지 않음.
+    """
     def move(steps):
         nonlocal selected
         for _ in range(abs(steps)):
@@ -46,13 +58,12 @@ def solution(n, k, cmd):
         if node["next"]:
             node["next"]["prev"] = node
 
-    table = [{} for _ in range(n)]  # [{}] * n로 하면 같은 객체를 참조하게 된다.
+    table = [{'idx': i} for i in range(n)]  # [{}] * n로 하면 같은 객체를 참조하게 된다.
     for i in range(n):
         """
         table[i] = {} 형식으로 초기화하면 새로 객체를 할당하기 때문에
         prev, next 할당에 오류가 생긴다.
         """
-        table[i]["idx"] = i
         table[i]["prev"] = table[i-1] if i else None
         table[i]["next"] = table[i+1] if i < n-1 else None
     alive = ["O"] * n
@@ -79,12 +90,15 @@ inputdatas = [
 
 """
 2021 카카오 채용연계형 인턴십
-Lv.3. 현 시점 완료한 사람 5,176명, 정답률 38%
+Lv.3. 현 시점 완료한 사람 5,852명, 정답률 39%
 이전엔 1시간 걸려서 리스트 작성, 80분으로 딕셔너리 풀이 작성. 이후에도 오류 수정 시간 추가.
 이번엔 27분만에 클래스로 해결했다.
 클래스 풀이가 느려서 딕셔너리로 개선해봤다. 
 설계 과정에서 참조 문제를 고민하느라 구현에 20분 정도 걸렸다.
 클래스 풀이나 이전 딕셔너리 풀이보다 빠르다.
+3회차 10분. 확실히 링크드리스트 아이디어만 떠올리면 어렵지 않은 문제.
+3회차 풀이는 노드의 prev, next에 idx만 기록했고 selected도 idx로 다뤘다.
+전체 로직은 똑같고, 노드쪽이 코드가 짧아서 유지.
 """
 
 for inputdata in inputdatas:
