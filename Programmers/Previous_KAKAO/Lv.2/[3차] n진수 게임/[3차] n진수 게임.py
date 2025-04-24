@@ -28,6 +28,7 @@ inputdatas = [
 2018 KAKAO BLIND RECRUITMENT
 Lv.2. 현 시점 완료한 사람 13,696명, 정답률 61%
 이전엔 31분 걸렸는데 이번엔 17분 걸렸다. 진법 변환 로직이 기억나지 않아 시간이 걸렸다.
+3회차 6분. 진법 변환은 여전히 외워지지 않는다.
 """
 
 for inputdata in inputdatas:
