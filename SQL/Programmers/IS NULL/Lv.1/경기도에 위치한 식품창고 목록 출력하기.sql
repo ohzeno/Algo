@@ -1,0 +1,27 @@
+# https://school.programmers.co.kr/learn/courses/30/lessons/131114
+/*
+FOOD_WAREHOUSE
+    WAREHOUSE_ID	VARCHAR(10)	FALSE
+    WAREHOUSE_NAME	VARCHAR(20)	FALSE
+    ADDRESS	VARCHAR(100)	TRUE
+    TLNO	VARCHAR(20)	TRUE
+    FREEZER_YN	VARCHAR(1)	TRUE
+*/
+
+
+-- 코드를 입력하세요
+SELECT WAREHOUSE_ID,
+       WAREHOUSE_NAME,
+       ADDRESS,
+       IF(FREEZER_YN IS NULL, 'N', FREEZER_YN) AS FREEZER_YN
+FROM FOOD_WAREHOUSE
+WHERE ADDRESS LIKE '경기도%'
+ORDER BY WAREHOUSE_ID;
+
+
+/*
+IS NULL
+Lv.1. 현 시점 완료한 사람 28,928명, 정답률 91%
+IF, IS NULL을 잊고 있었다.
+IFNULL 쓸 수 있지만 복습 목적이고 IS NULL카테고리라 IS NULL을 사용했다.
+*/
