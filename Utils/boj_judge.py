@@ -2,6 +2,7 @@ import io
 import sys
 import traceback
 from contextlib import redirect_stdout, redirect_stderr
+import re
 
 
 def get_result(input_data: str) -> tuple[str, str]:
@@ -11,9 +12,14 @@ def get_result(input_data: str) -> tuple[str, str]:
     output = io.StringIO()
     errors = io.StringIO()
 
-    # 스크립트 컴파일
     with open(script, encoding="utf-8") as f:
-        code = compile(f.read(), script, "exec")
+        code_str = f.read()
+
+    # sys.stdin = open('input.txt') 패턴을 찾아서 주석처리
+    code_str = re.sub(r"sys\.stdin\s*=\s*open\(['\"]input\.txt['\"].*?\)",
+                      lambda m: '# ' + m.group(0), code_str)
+
+    code = compile(code_str, script, "exec")
     # 표준 출력을 output으로 변경 후 스크립트 실행
     with redirect_stdout(output), redirect_stderr(errors):
         try:
