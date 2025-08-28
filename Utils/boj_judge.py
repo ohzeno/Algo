@@ -2,24 +2,32 @@ import io
 import sys
 import traceback
 from contextlib import redirect_stdout, redirect_stderr
+import subprocess
 import re
 
 
 def get_result(input_data: str) -> tuple[str, str]:
+    if script_path.endswith('.py'):
+        return process_py_code(input_data)
+    elif script_path.endswith('.js'):
+        return process_js_code(input_data)
+
+
+def process_py_code(input_data: str) -> tuple[str, str]:
     # 입력 스트림을 StringIO 객체로 변경
     sys.stdin = io.StringIO(input_data)
     # 출력과 에러 캡처를 위한 StringIO 객체 생성
     output = io.StringIO()
     errors = io.StringIO()
 
-    with open(script, encoding="utf-8") as f:
+    with open(script_path, encoding="utf-8") as f:
         code_str = f.read()
 
     # sys.stdin = open('input.txt') 패턴을 찾아서 주석처리
     code_str = re.sub(r"sys\.stdin\s*=\s*open\(['\"]input\.txt['\"].*?\)",
                       lambda m: '# ' + m.group(0), code_str)
 
-    code = compile(code_str, script, "exec")
+    code = compile(code_str, script_path, "exec")
     # 표준 출력을 output으로 변경 후 스크립트 실행
     with redirect_stdout(output), redirect_stderr(errors):
         try:
@@ -36,74 +44,41 @@ def get_result(input_data: str) -> tuple[str, str]:
     return output.getvalue(), errors.getvalue()
 
 
+def process_js_code(input_data: str) -> tuple[str, str]:
+    with open(script_path, encoding="utf-8") as f:
+        code_str = f.read()
+
+    # input_data를 JavaScript 배열 형태로 변환
+    lines_array = str(input_data.split('\n'))
+
+    # lines 변수 할당 부분을 배열로 대체
+    code_str = re.sub(
+        r'realCodeLines = .*?\.split\("\\n"\);',
+        f'realCodeLines = {lines_array};',
+        code_str
+    )
+
+    try:
+        result = subprocess.run(
+            ['node', '-e', code_str],
+            text=True,
+            capture_output=True,
+            timeout=5
+        )
+        return result.stdout, result.stderr
+    except Exception as e:
+        return "", str(e)
+
+
 inputdatas = [
-    {"data": """7 8 1
-0 0 0 0 0 0 0 9
-0 0 0 0 3 0 0 8
--1 0 5 0 0 0 22 0
--1 8 0 0 0 0 0 0
-0 0 0 0 0 10 43 0
-0 0 5 0 15 0 0 0
-0 0 40 0 0 0 20 0""", "answer": """188"""},
-    {"data": """7 8 2
-0 0 0 0 0 0 0 9
-0 0 0 0 3 0 0 8
--1 0 5 0 0 0 22 0
--1 8 0 0 0 0 0 0
-0 0 0 0 0 10 43 0
-0 0 5 0 15 0 0 0
-0 0 40 0 0 0 20 0""", "answer": """188"""},
-    {"data": """7 8 3
-0 0 0 0 0 0 0 9
-0 0 0 0 3 0 0 8
--1 0 5 0 0 0 22 0
--1 8 0 0 0 0 0 0
-0 0 0 0 0 10 43 0
-0 0 5 0 15 0 0 0
-0 0 40 0 0 0 20 0""", "answer": """186"""},
-    {"data": """7 8 4
-0 0 0 0 0 0 0 9
-0 0 0 0 3 0 0 8
--1 0 5 0 0 0 22 0
--1 8 0 0 0 0 0 0
-0 0 0 0 0 10 43 0
-0 0 5 0 15 0 0 0
-0 0 40 0 0 0 20 0""", "answer": """178"""},
-    {"data": """7 8 5
-0 0 0 0 0 0 0 9
-0 0 0 0 3 0 0 8
--1 0 5 0 0 0 22 0
--1 8 0 0 0 0 0 0
-0 0 0 0 0 10 43 0
-0 0 5 0 15 0 0 0
-0 0 40 0 0 0 20 0""", "answer": """172"""},
-    {"data": """7 8 20
-0 0 0 0 0 0 0 9
-0 0 0 0 3 0 0 8
--1 0 5 0 0 0 22 0
--1 8 0 0 0 0 0 0
-0 0 0 0 0 10 43 0
-0 0 5 0 15 0 0 0
-0 0 40 0 0 0 20 0""", "answer": """71"""},
-    {"data": """7 8 30
-0 0 0 0 0 0 0 9
-0 0 0 0 3 0 0 8
--1 0 5 0 0 0 22 0
--1 8 0 0 0 0 0 0
-0 0 0 0 0 10 43 0
-0 0 5 0 15 0 0 0
-0 0 40 0 0 0 20 0""", "answer": """52"""},
-    {"data": """7 8 50
-0 0 0 0 0 0 0 9
-0 0 0 0 3 0 0 8
--1 0 5 0 0 0 22 0
--1 8 0 0 0 0 0 0
-0 0 0 0 0 10 43 0
-0 0 5 0 15 0 0 0
-0 0 40 0 0 0 20 0""", "answer": """46"""},
+    {"data": """4
+1 9 7 3
+5
+1 8 7 5 3""", "answer": """2
+7 3"""},
 ]
 
-script = "../i_pro.py"
+script_path = "../i_pro.js"
 
 for inputdata in inputdatas:
     data, ans = inputdata["data"], inputdata["answer"]
