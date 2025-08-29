@@ -3,6 +3,10 @@ import clipboard
 def conversion(lines):
     new_codes = []
     comm = False
+    # 첫 줄에서 사이트 구분
+    is_boj = False
+    if lines and lines[0].strip().startswith('//') and 'acmicpc.net' in lines[0]:
+        is_boj = True
     for line in lines:
         line = line.rstrip()
         if r"/*" in line or r"*/" in line:  # 여러 줄 주석 토글
@@ -22,7 +26,7 @@ def conversion(lines):
                         line = line[:line.rfind(r'//')].rstrip()
                     else:
                         break
-        if line.startswith("}"):
+        if not is_boj and line.startswith("}"):
             new_codes.append("}")
             break
         line += '\n'
