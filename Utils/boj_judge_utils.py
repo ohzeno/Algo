@@ -4,6 +4,8 @@ import traceback
 from contextlib import redirect_stdout, redirect_stderr
 import subprocess
 import re
+import inspect
+from pathlib import Path
 
 
 def get_result(script_path, input_data: str) -> tuple[str, str]:
@@ -68,3 +70,21 @@ def process_js_code(script_path, input_data: str) -> tuple[str, str]:
         return result.stdout, result.stderr
     except Exception as e:
         return "", str(e)
+
+
+def find_script():
+    # 이 함수를 호출한 스크립트의 위치 가져오기
+    caller_frame = inspect.stack()[1]
+    caller_path = Path(caller_frame.filename).parent
+
+    # 시도할 경로들
+    candidates = [
+        caller_path.parent / 'i_pro.py',  # ../i_pro.py (기본)
+        caller_path / f'{caller_path.name}.py',  # 백준폴더에서. 현재폴더명.py
+    ]
+
+    for path in candidates:
+        if path.exists():
+            return str(path)
+
+    raise FileNotFoundError(f"스크립트를 찾을 수 없습니다. 확인한 경로: {candidates}")

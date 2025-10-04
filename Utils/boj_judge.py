@@ -1,4 +1,4 @@
-from Utils.boj_judge_util import *
+from Utils.boj_judge_utils import *
 
 
 inputdatas = [
@@ -10,7 +10,7 @@ inputdatas = [
 25 38 31"""}
 ]
 
-script_path = "../i_pro.py"
+script_path = find_script()
 
 for inputdata in inputdatas:
     data, ans = inputdata["data"], inputdata["answer"]
