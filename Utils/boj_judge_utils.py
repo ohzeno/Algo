@@ -72,9 +72,9 @@ def process_js_code(script_path, input_data: str) -> tuple[str, str]:
         return "", str(e)
 
 
-def find_script():
-    # 이 함수를 호출한 스크립트의 위치 가져오기
-    caller_frame = inspect.stack()[1]
+def find_script(depth=1):
+    # run_judge를 호출한 스크립트의 위치 가져오기
+    caller_frame = inspect.stack()[depth]
     caller_path = Path(caller_frame.filename).parent
 
     # 시도할 경로들
@@ -88,3 +88,24 @@ def find_script():
             return str(path)
 
     raise FileNotFoundError(f"스크립트를 찾을 수 없습니다. 확인한 경로: {candidates}")
+
+
+def run_judge(inputdatas):
+    script_path = find_script(depth=2)
+    for inputdata in inputdatas:
+        data, ans = inputdata["data"], inputdata["answer"]
+        output, error = get_result(script_path, data)
+        output = output.rstrip()  # 개행문자 제거
+        if output == ans:  # 정답과 출력값이 같으면 pass
+            print("pass")
+        else:  # 다르면 fail과 정답, 출력값 출력
+            summary = "fail"
+            print(f"\nInput: {data}")
+            for label, content in [("expected:", ans), ("got:", output), ("Error:", error)]:
+                if label == "Error:" and not content:
+                    continue
+                summary += f"\n  {label}\n"
+                for line in content.splitlines():
+                    summary += f"    {line}\n"
+                summary = summary.rstrip()
+            print(summary)
