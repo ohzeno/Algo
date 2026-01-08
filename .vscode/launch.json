@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug Active Rust File",
+            "program": "${workspaceFolder}\\.build\\${fileBasenameNoExtension}.exe",
+            "args": [],
+            "cwd": "${fileDirname}",
+            "preLaunchTask": "build rust",
+            "sourceLanguages": ["rust"]
+        }
+    ]
+}
