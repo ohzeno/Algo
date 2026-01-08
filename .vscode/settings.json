@@ -1,0 +1,7 @@
+{
+    "code-runner.executorMap": {
+        "rust": "$workspaceRoot\\.vscode\\run_rust.bat $workspaceRoot $fullFileName $fileNameWithoutExt"
+    },
+    "code-runner.runInTerminal": false,
+    "code-runner.clearPreviousOutput": true
+}
