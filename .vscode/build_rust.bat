@@ -1,3 +1,8 @@
 @echo off
-if not exist "%1\.build" mkdir "%1\.build"
-rustc -g "%2" -o "%1\.build\%3.exe"
+setlocal
+set "workspace=%~1"
+set "filepath=%~2"
+set "filename=%~3"
+
+if not exist "%workspace%\.build" mkdir "%workspace%\.build"
+rustc -g "%filepath%" --crate-name solution -o "%workspace%\.build\%filename%.exe"
