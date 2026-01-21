@@ -5,4 +5,4 @@ set "filepath=%~2"
 set "filename=%~3"
 
 if not exist "%workspace%\.build" mkdir "%workspace%\.build"
-rustc -g "%filepath%" --crate-name solution -o "%workspace%\.build\%filename%.exe"
+rustc -g "%filepath%" --edition 2024 --crate-name solution -o "%workspace%\.build\%filename%.exe"
