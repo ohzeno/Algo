@@ -18,7 +18,6 @@ REST_REVIEW
     REVIEW_DATE	DATE	TRUE
 */
 
-
 -- 코드를 입력하세요
 SELECT RI.REST_ID,
        RI.REST_NAME,
