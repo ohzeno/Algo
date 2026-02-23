@@ -38,7 +38,7 @@ def conversion(lines):
     return output
 
 # 풀이 파일을 읽어서 한줄씩 리스트에 넣음.
-file_path = '../sql_pro.sql'
+file_path = '../i_pro.sql'
 with open(file_path, 'r', encoding='utf-8') as file:
     input_code = [line.rstrip() for line in file]
 # 스키마 쿼리를 변환하고 클립보드에 복사함.

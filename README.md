@@ -114,7 +114,7 @@ file_path = '../i_pro.py'
 
 SQL/input.txt에 릿코드의 스키마를 붙여넣고 SQL/Schema_Conversion.py를 실행하면 알아보기 쉽게 변환된 쿼리가 클립보드에 복사된다.
 
-해당 쿼리를 sql_pro.sql 위쪽에 붙여넣고 쿼리를 넣고 실행하면 로컬에서 db를 조회하고 테스트할 수 있다.
+해당 쿼리를 i_pro.sql 위쪽에 붙여넣고 쿼리를 넣고 실행하면 로컬에서 db를 조회하고 테스트할 수 있다.
 
 ```sql
 Create table If Not Exists Product (product_id int, product_name varchar(10), unit_price int)
